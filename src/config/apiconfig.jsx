@@ -6,8 +6,8 @@
 
 
 const config = {
-    BASE_URL : "http://192.168.1.8:8089",
-    // BASE_URL: import.meta.env.VITE_BASE_URL,
+    // BASE_URL : "http://192.168.1.8:8089",
+    BASE_URL: import.meta.env.VITE_BASE_URL,
     
 };
 
