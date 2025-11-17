@@ -1,0 +1,78 @@
+
+/* Overall container for the admin panel */
+.adminContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+    /* background-color: #f4f6f8;  */
+    /* Light gray for admin vibe */
+    font-family: 'Arial', sans-serif; /* Clean font */
+  }
+  
+  /* Fixed Navbar */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; /* Fixed height for navbar */
+    color: #fff;
+    display: flex;
+    /* align-items: center; */
+    /* padding: 0 20px; */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Stays above other content */
+  }
+  
+  /* Main container below navbar */
+  .mainContainer {
+    display: flex;
+    flex: 1; /* Takes up remaining height */
+    margin-top: 60px; /* Offset for fix#f1f8f4ed navbar */
+  }
+  
+  
+  /* Content Area */
+  .content {
+    flex: 1; /* Takes remaining space */
+    margin-left: 300px; /* Offset for fixed sidebar */
+    padding: 20px 30px;
+    background-color: #ffffff;
+    min-height: calc(100vh - 60px); /* Full height minus navbar */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px; /* Slightly narrower on smaller screens */
+    }
+  
+    .content {
+      margin-left: 200px; /* Adjust for narrower sidebar */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .navbar {
+      height: 50px; /* Smaller navbar on mobile */
+      font-size: 0.9rem;
+    }
+  
+    .mainContainer {
+      margin-top: 50px; /* Adjust for smaller navbar */
+      flex-direction: column; /* Stack sidebar and content */
+    }
+  
+    .sidebar {
+      width: 100%;
+      position: static; /* No fixed position on mobile */
+      min-height: auto; /* Auto height on mobile */
+      border-right: none;
+      border-bottom: 1px solid #e0e0e0;
+    }
+  
+    .content {
+      margin-left: 0; /* No offset on mobile */
+      padding: 15px;
+    }
+  }

@@ -1,0 +1,196 @@
+/* AddWorkshop.module.css */
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Form Section */
+  .formSection {
+    background-color: #f1f8f4; /* Light green background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .formSection h2 {
+    color: #2d6a4f; /* Green theme */
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+  }
+  
+  .form label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: #2d6a4f;
+    font-weight: 500;
+  }
+  
+  .submitButton {
+    background: linear-gradient(90deg, #48bb78, #2d6a4f);
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background: linear-gradient(90deg, #2d6a4f, #48bb78);
+  }
+  
+  /* Workshop List Section */
+  .workshopSection {
+    background-color: #f1f8f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .workshopSection h2 {
+    color: #2d6a4f;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+  }
+  
+  .tableContainer {
+    overflow-x: auto;
+  }
+  
+  .workshopTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .workshopTable th,
+  .workshopTable td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .workshopTable th {
+    background-color: #2d6a4f;
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .workshopTable td {
+    color: #333;
+  }
+  
+  .noData {
+    text-align: center;
+    color: #2d6a4f;
+    padding: 20px;
+  }
+  
+  /* Action Buttons */
+  .editButton,
+  .deleteButton {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background 0.3s ease;
+  }
+  
+  .editButton {
+    background-color: #2d6a4f;
+    color: #fff;
+  }
+  
+  .editButton:hover {
+    background-color: #48bb78;
+  }
+  
+  .deleteButton {
+    background-color: #ff6b6b;
+    color: #fff;
+  }
+  
+  .deleteButton:hover {
+    background-color: #ff8787;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+      gap: 30px;
+    }
+  
+    .formSection,
+    .workshopSection {
+      padding: 15px;
+    }
+  
+    .formSection h2,
+    .workshopSection h2 {
+      font-size: 1.3rem;
+    }
+  
+    .form {
+      max-width: 100%;
+    }
+  
+    .workshopTable th,
+    .workshopTable td {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+  
+    .editButton,
+    .deleteButton {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 10px;
+    }
+  
+    .formSection,
+    .workshopSection {
+      padding: 10px;
+    }
+  
+    .formSection h2,
+    .workshopSection h2 {
+      font-size: 1.2rem;
+    }
+  
+    .workshopTable th,
+    .workshopTable td {
+      padding: 8px;
+      font-size: 0.85rem;
+    }
+  
+    .editButton,
+    .deleteButton {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+  }

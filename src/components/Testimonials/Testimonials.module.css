@@ -1,0 +1,172 @@
+.testimonialContainer {
+    max-width: 70rem;
+    margin: auto;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    /* background: white; */
+    border-radius: 10px;
+    /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
+  }
+  
+  /* Title Styling */
+  .title {
+    font-size: 2rem;
+    font-weight: bold;
+    /* color: #1b5e20; */
+    color: #2d6a4f ;
+    margin-bottom: 1rem;
+  }
+  
+  /* Image Wrapper for Profile Pictures and Arrows */
+  .imageWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rem;
+    flex-wrap: wrap;
+  }
+  
+  /* Arrow Buttons */
+  .arrow {
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: gray;
+    transition: color 0.3s ease;
+  }
+  
+  .arrow:hover {
+    color: black;
+  }
+  
+  /* Profile Image */
+  .profileImage {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    transition: transform 0.3s ease;
+  }
+  
+  .profileImage:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Star Ratings */
+  .stars {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    color: gold;
+    font-size: 1.2rem;
+  }
+  
+  /* Testimonial Text */
+  .review {
+    font-size: 1.2rem;
+    color: #555;
+    font-style: italic;
+    margin: 1rem auto;
+    max-width: 50rem;
+    line-height: 1.6;
+  }
+  
+  /* Name */
+  .name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* ----------------------------------- */
+  /* ✅ RESPONSIVE DESIGN FOR ALL DEVICES */
+  /* ----------------------------------- */
+  
+  /* 🟢 Large Tablets & Small Laptops */
+  @media (max-width: 1024px) {
+    .imageWrapper {
+      gap: 4rem;
+    }
+  
+    .profileImage {
+      width: 5rem;
+      height: 5rem;
+    }
+  
+    .title {
+      font-size: 1.8rem;
+    }
+  
+    .review {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* 🔵 Tablets & Small Screens */
+  @media (max-width: 768px) {
+    .imageWrapper {
+      /* flex-direction: column; */
+      gap: 2rem;
+    }
+  
+    .profileImage {
+      width: 4.5rem;
+      height: 4.5rem;
+    }
+  
+    .title {
+      font-size: 1.6rem;
+    }
+  
+    .review {
+      font-size: 1rem;
+      max-width: 90%;
+    }
+  
+    .name {
+      font-size: 1.2rem;
+    }
+  
+    .stars {
+      font-size: 1rem;
+    }
+  }
+  
+  /* 🔴 Mobile Screens */
+  @media (max-width: 480px) {
+    .testimonialContainer {
+      padding: 2rem 1rem;
+    }
+  
+    .imageWrapper {
+      gap: 1.5rem;
+    }
+  
+    .profileImage {
+      width: 4rem;
+      height: 4rem;
+    }
+  
+    .title {
+      font-size: 1.4rem;
+    }
+  
+    .review {
+      font-size: 0.95rem;
+    }
+  
+    .name {
+      font-size: 1rem;
+    }
+  
+    .stars {
+      font-size: 0.9rem;
+    }
+  
+    .arrow {
+      font-size: 1.2rem;
+    }
+  }
+  

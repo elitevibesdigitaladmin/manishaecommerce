@@ -1,0 +1,288 @@
+/* src/components/Login.module.css */
+
+/* Container */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* min-height: 80vh; */
+  /* background: #f6f6f6; */
+  padding: 20px;
+}
+
+/* Form Box */
+.loginBox {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); /* Subtle shadow */
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.loginBox:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.loginBox h2 {
+  color: #2d6a4f;
+  font-size: 1.75rem; /* Slightly larger for emphasis */
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.loginBox p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.loginBox p a {
+  color: #2d6a4f;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.loginBox p a:hover {
+  color: #40916c;
+  text-decoration: underline;
+}
+
+/* Social Buttons */
+.socialButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.facebookBtn,
+.googleBtn {
+  flex: 1;
+  border: none;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.facebookBtn {
+  background-color: #1877f2;
+}
+
+.facebookBtn:hover {
+  background-color: #2e80eb;
+  transform: translateY(-1px);
+}
+
+.googleBtn {
+  background-color: #db4437;
+}
+
+.googleBtn:hover {
+  background-color: #c4544a;
+  transform: translateY(-1px);
+}
+
+/* Input Fields */
+.inputField {
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 0.75rem; /* Extra right padding for icon */
+  border: 1px solid #c8d6e5;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  height: 2.75rem; /* Consistent height for alignment */
+  line-height: 1.5;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: #2d6a4f;
+  outline: none;
+  background-color: #f0f8f4; /* Light green tint on focus */
+}
+
+.inputField:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Password Wrapper and Toggle */
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.75rem; 
+  top: 45%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  color: #2d6a4f; 
+  /* transition: color 0.3s ease, transform 0.2s ease; */
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  /* height: 100%;  */
+  /* width: 2rem;  */
+  /* padding: 0; */
+}
+
+.passwordToggle:hover {
+  color: #40916c; /* Darker green on hover */
+  /* transform: translateY(-50%) scale(1.1);  */
+}
+
+/* .passwordToggle:focus {
+  outline: none;
+  color: #40916c;
+  box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2);
+} */
+
+/* Forgot Password */
+.forgotPassword {
+  display: block;
+  text-align: right;
+  color: #2d6a4f;
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.forgotPassword:hover {
+  color: #40916c;
+  text-decoration: underline;
+}
+
+/* Submit Button */
+.signInBtn {
+  width: 100%;
+  background-color: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+.signInBtn:hover {
+  background-color: #40916c;
+  transform: translateY(-1px);
+}
+
+.signInBtn:disabled {
+  background-color: #a3bffa;
+  cursor: not-allowed;
+}
+
+/* Return to Store */
+.returnToStore {
+  display: block;
+  color: #2d6a4f;
+  text-decoration: none;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.returnToStore:hover {
+  color: #40916c;
+  text-decoration: underline;
+}
+
+/* Error Styles */
+.errorText {
+  color: #d9534f;
+  font-size: 0.875rem;
+  text-align: left;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.errorBorder {
+  border: 2px solid #d9534f !important;
+  background-color: #f8d7da;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.errorBorder:focus {
+  border-color: #c82333;
+  background-color: #f8d7da;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .loginBox {
+    padding: 1.5rem;
+    width: 90%; /* Slightly wider on very small screens */
+  }
+
+  .loginBox h2 {
+    font-size: 1.5rem;
+  }
+
+  .loginBox p {
+    font-size: 0.85rem;
+  }
+
+  .socialButtons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .facebookBtn,
+  .googleBtn {
+    font-size: 0.9rem;
+    padding: 0.65rem;
+  }
+
+  .signInBtn {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .inputField {
+    font-size: 0.9rem;
+    padding: 0.65rem 2.5rem 0.65rem 0.65rem; /* Adjust padding for smaller screens */
+    height: 2.5rem;
+  }
+
+  .forgotPassword {
+    font-size: 0.8rem;
+  }
+
+  .returnToStore {
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .loginBox {
+    padding: 1.75rem;
+  }
+
+  .inputField {
+    padding: 0.75rem 2.75rem 0.75rem 0.75rem;
+  }
+}

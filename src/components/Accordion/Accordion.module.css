@@ -1,0 +1,74 @@
+/* Accordion Container */
+.accordionItem {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background: #fff;
+    overflow: hidden;
+  }
+  
+  /* Accordion Header */
+  .accordionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .accordionHeader:hover {
+    background: #f0f0f0;
+  }
+  
+  /* Title */
+  .accordionTitle {
+    margin: 0;
+    font-size: 1rem;
+    color: #1a3e3e;
+  }
+  
+  /* Content (Hidden by default) */
+  .accordionContent {
+    padding: 15px;
+    font-size: 0.9rem;
+    color: #444;
+    background: #fff;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Icons */
+  .icon {
+    color: #1a3e3e;
+    font-size: 1rem;
+  }
+  
+  /* Fade In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    .accordionHeader {
+      font-size: 0.9rem;
+      padding: 12px;
+    }
+    
+    .accordionContent {
+      font-size: 0.85rem;
+      padding: 12px;
+    }
+  }
+  

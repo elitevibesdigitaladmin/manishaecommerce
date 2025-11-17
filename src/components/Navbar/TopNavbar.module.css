@@ -1,0 +1,52 @@
+.topNavbar {
+    background-color: #b7e4c7; /* Light Green */
+    color: #2d6a4f; /* Dark Green */
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;  /* Ensures wrapping on smaller screens */
+    gap: 8rem; /* Large gap for desktops */
+    padding: 5px 2rem;
+    max-width: 100%;
+  }
+  
+  /* Reduce gap and padding for smaller screens */
+  @media (max-width: 1024px) {
+    .title {
+      gap: 3rem;
+      padding: 5px 1rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .title {
+      gap: 1.5rem;
+      font-size: 13px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .title {
+      flex-direction: column; /* Stack items vertically */
+      gap: 8px;
+      padding: 5px;
+    }
+  }
+  
+  .topNavbar a {
+    color: #2d6a4f; /* Matching green */
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .topNavbar a:hover {
+    text-decoration: underline;
+  }
+  

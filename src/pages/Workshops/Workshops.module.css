@@ -1,0 +1,91 @@
+
+
+.workshopsContainer {
+    position: relative; 
+    margin-top: 8px;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .workshopsContainer h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #2d4739;
+  }
+  
+  .workshopsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .workshopCard {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+  
+  .workshopCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .workshopCard h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    color: #1e3d2f;
+  }
+  
+  .workshopCard p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #444;
+  }
+  
+  .bookButton {
+    margin-top: 1rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #3e7c59;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background-color 0.3s ease;
+  }
+  
+  .bookButton:hover {
+    background-color: #335f47;
+  }
+  
+  .loading,
+  .error {
+    text-align: center;
+    font-size: 1rem;
+    color: #cc0000;
+    margin-top: 2rem;
+  }
+  
+  /* Responsive Typography */
+  @media (max-width: 768px) {
+    .workshopCard h2 {
+      font-size: 1.25rem;
+    }
+  
+    .workshopCard p {
+      font-size: 0.9rem;
+    }
+  
+    .bookButton {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  

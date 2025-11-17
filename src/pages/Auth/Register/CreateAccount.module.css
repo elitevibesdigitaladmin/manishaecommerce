@@ -1,0 +1,171 @@
+/* src/components/CreateAccount.module.css */
+
+/* Container */
+.registerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* min-height: 100vh; */
+    /* background: #f6f6f6; */
+    padding: 20px;
+  }
+  
+  /* Form Box */
+  .registerBox {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+
+  }
+
+  .registerBox:hover{
+    transform: translateY(-2px); 
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  .registerBox h2 {
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+  }
+  
+  /* Social Buttons */
+  .socialButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+
+  /* Password Wrapper and Toggle */
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.75rem; 
+  top: 40%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  color: #2d6a4f; 
+  /* transition: color 0.3s ease, transform 0.2s ease; */
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  /* height: 100%;  */
+  /* width: 2rem;  */
+  /* padding: 0; */
+}
+
+.passwordToggle:hover {
+  color: #40916c; /* Darker green on hover */
+  /* transform: translateY(-50%) scale(1.1);  */
+}
+
+.passwordToggle:focus {
+  outline: none;
+  color: #40916c;
+  /* box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2); */
+}
+  
+  .facebookBtn,
+  .googleBtn {
+    flex: 1;
+    border: none;
+    color: white;
+    padding: 0.6rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .facebookBtn {
+    background-color: #1877f2;
+  }
+
+  .facebookBtn:hover {
+    background-color: #2e80eb;
+  }
+  
+  .googleBtn {
+    background-color: #db4437;
+  }
+
+  .googleBtn:hover {
+    background-color: #c4544a;
+  }
+  
+  /* Input Fields */
+  .inputField {
+    width: 100%;
+    /* padding: 0.8rem; */
+    
+    border: 1px solid #c8d6e5;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+  }
+  
+  .inputField:focus {
+    border-color: #2d6a4f;
+    outline: none;
+  }
+  
+  /* Error Input */
+  .errorInput {
+    border-color: #e63946;
+  }
+  
+  /* Submit Button */
+  .createBtn {
+    width: 100%;
+    background-color: #2d6a4f;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .createBtn:hover {
+    background-color: #40916c;
+  }
+  
+  /* Return to Store */
+  .returnToStore {
+    display: block;
+    color: #2d6a4f;
+    text-decoration: none;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 480px) {
+    .registerBox {
+      padding: 1.5rem;
+    }
+  
+    .socialButtons {
+      flex-direction: column;
+    }
+  
+    .createBtn {
+      font-size: 1rem;
+    }
+  }
+  

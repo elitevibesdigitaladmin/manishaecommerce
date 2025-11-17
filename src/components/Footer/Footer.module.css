@@ -1,0 +1,260 @@
+.footer {
+  background-color: #f1f8f4;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Top Section */
+.topSection {
+  background-color: #004d24;
+  padding: 10px;
+  text-align: center;
+}
+
+.cities a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.cities a:hover {
+  text-decoration: underline;
+}
+
+/* Main Section */
+.mainSection {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 20px 50px;
+}
+
+.column {
+  flex: 1;
+  min-width: 200px;
+}
+
+.column p {
+  color: #5A7D5A;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.column h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+/* List Styling */
+.column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.column ul li {
+  font-size: 14px;
+  margin: 8px 0;
+  cursor: pointer;
+  position: relative;
+  /* display: inline-block;  */
+  /* Ensures li wraps only around its text */
+}
+
+.column ul li a {
+  text-decoration: none;
+  position: relative;
+  color: inherit;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Underline that appears on hover */
+.column ul li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  background-color: #2D572C;
+  bottom: -2px; /* Adjust for spacing */
+  left: 0;
+  transition: width 0.3s ease-in-out;
+}
+.column ul li {
+  font-size: 14px;
+  margin: 8px 0;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Underline that matches text width */
+.column ul li::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0.5px;
+  background-color: #2D572C;
+  bottom: 0;
+  left: 0;
+  display: inline;  /* Ensures the underline is only as wide as the text */
+  transition: width 0.3s ease-in-out;
+}
+
+.column ul li:hover::after {
+  width: 100%;
+}
+
+.column ul li:hover a {
+  color: #2D572C; /* Changes text color on hover */
+}
+
+
+/* Newsletter Section */
+.newsletter {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  max-width: 350px;
+}
+
+.newsletter input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+  background: transparent;
+}
+
+.newsletter button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  color: #333;
+}
+
+.newsletter button:hover {
+  color: #000;
+}
+
+/* Social Icons */
+.socialIcons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 20px;
+  color: #b7e4c7;
+}
+
+.socialIcons svg:hover {
+  color: #004d24;
+}
+
+.socialIcon{
+  font-size: 1.5rem;
+}
+
+/* Bottom Section */
+.bottomSection {
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  border-top: 1px solid #ccc;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bottomSection a{
+  color: #5A7D5A;
+  font-size: 16px;
+}
+
+.bottomSection a:hover{
+  color: #2D572C;
+}
+
+/* Payment Icons */
+.paymentIcons img {
+  width: 40px;
+  margin: 0 5px;
+}
+
+/* WhatsApp Floating Icon */
+.whatsappIcon {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #25D366;
+  color: #fff;
+  font-size: 30px;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.whatsappIcon:hover {
+  background-color: #1ebe5d;
+}
+
+/* ======== Media Queries ======== */
+
+/* Tablets and smaller devices */
+@media (max-width: 992px) {
+  .mainSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 576px) {
+  .topSection {
+    font-size: 12px;
+  }
+
+  .cities a {
+    display: block;
+    margin: 5px 0;
+  }
+
+  .mainSection {
+    padding: 20px;
+  }
+
+  .column {
+    width: 100%;
+  }
+
+  .newsletter {
+    flex-direction: column;
+  }
+
+  .newsletter input {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .newsletter button {
+    width: 100%;
+  }
+
+  .bottomSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .paymentIcons img {
+    width: 30px;
+  }
+
+  .whatsappIcon {
+    font-size: 25px;
+  }
+}

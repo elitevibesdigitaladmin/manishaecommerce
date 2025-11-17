@@ -1,0 +1,223 @@
+/* AdminNavbar.module.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 2px solid #e6e6e6;
+  padding: 10px 30px;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  height: 60px;
+}
+
+.leftSection {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2e7d32; /* Green theme for Green Gifts */
+  margin: 0;
+}
+
+.logo img{
+  width: 6rem;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon {
+  font-size: 22px;
+  cursor: pointer;
+  color: #2e7d32; /* Green theme */
+  transition: color 0.3s ease;
+}
+
+.icon:hover {
+  color: #1b5e20; /* Darker green on hover */
+}
+
+.notification {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #f44336;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.profileSection {
+  position: relative;
+  cursor: pointer;
+}
+
+.profileIcon {
+  font-size: 22px;
+  color: #2e7d32; /* Green theme */
+  transition: color 0.3s ease;
+}
+
+.profileIcon:hover {
+  color: #1b5e20; /* Darker green on hover */
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 150px;
+  z-index: 999;
+}
+
+.dropdownMenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdownMenu li {
+  padding: 10px 15px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdownMenu li:hover {
+  background-color: #f0f0f0;
+}
+
+
+/* Responsive Design */
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: row; /* Keep horizontal layout for better usability */
+    justify-content: flex-end; /* Align icons to the right */
+    padding: 10px 20px;
+  }
+
+  .leftSection {
+    display: none; /* Hide the Green Gifts logo on smaller screens */
+  }
+
+  .rightSection {
+    width: 100%;
+    justify-content: flex-end; /* Align icons to the right */
+    gap: 15px;
+  }
+
+  .dropdownMenu {
+    top: 30px;
+    right: 0;
+    width: 120px;
+  }
+
+  .icon,
+  .profileIcon {
+    font-size: 20px;
+  }
+
+  .badge {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: -4px;
+    right: -4px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .rightSection {
+    gap: 10px;
+  }
+
+  .icon,
+  .profileIcon {
+    font-size: 18px;
+  }
+
+  .badge {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    top: -3px;
+    right: -3px;
+  }
+
+  .dropdownMenu {
+    width: 100px;
+    top: 25px;
+  }
+
+  .dropdownMenu li {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Very Small Devices (360px and below) */
+@media (max-width: 360px) {
+  .navbar {
+    padding: 8px 10px;
+  }
+
+  .rightSection {
+    gap: 8px;
+  }
+
+  .icon,
+  .profileIcon {
+    font-size: 16px;
+  }
+
+  .badge {
+    width: 12px;
+    height: 12px;
+    font-size: 8px;
+    top: -2px;
+    right: -2px;
+  }
+
+  .dropdownMenu {
+    width: 90px;
+    top: 20px;
+  }
+
+  .dropdownMenu li {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+}

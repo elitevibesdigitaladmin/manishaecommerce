@@ -1,0 +1,298 @@
+/* Carousel Container */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 550px; /* Default height for larger screens */
+  overflow: hidden;
+  border-radius: 10px; /* Optional: For rounded corners */
+}
+
+/* Image Wrapper */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Individual Carousel Image */
+.carouselImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 1s ease-in-out; /* Fade transition */
+}
+
+/* Active Image */
+.carouselImage.active {
+  opacity: 1; /* Show active image */
+}
+
+/* Previous and Next Buttons */
+.prevButton,
+.nextButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%; /* Circular buttons */
+  z-index: 10; /* Ensure buttons are on top */
+  font-size: 1.5rem; /* Larger icon size */
+  transition: background-color 0.3s ease;
+}
+
+/* Left button position */
+.prevButton {
+  left: 20px;
+}
+
+/* Right button position */
+.nextButton {
+  right: 20px;
+}
+
+/* Hover effect for buttons */
+.prevButton:hover,
+.nextButton:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* Darker background on hover */
+}
+
+/* Dots Container */
+.dotsContainer {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+/* Individual Dot */
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: #ddd; /* Light grey dots */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Active Dot */
+.activeDot {
+  background-color: #2d6a4f; /* Green for active dot */
+  transform: scale(1.2); /* Slightly enlarge active dot */
+}
+
+/* Banner Content */
+.bannerContent {
+  position: absolute;
+  top: 85%; /* Vertically center */
+  left: 50%; /* Horizontally center */
+  transform: translate(-50%, -50%); /* Offset to truly center */
+  color: #fff;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* For better readability */
+  text-align: center; /* Center the text */
+  z-index: 5; /* Ensure content stays on top of the image */
+}
+
+/* Banner Title */
+.bannerContent h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Banner Description */
+.bannerContent p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Shop Now Button */
+.shopNowButton {
+  background-color: #2d6a4f; /* Green background */
+  color: #fff;
+  padding: 8px 15px;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 15px; /* Rounded corners */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-block; /* Ensures the button is inline */
+}
+
+.shopNowButton:hover {
+  background-color: #1b5e20; /* Darker green on hover */
+  color: #f0f0f0;
+  /* transform: translateY(-3px);  */
+  /* Slight lift effect on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .carousel {
+    height: 250px; /* Reduced height for smaller screens */
+  }
+
+  /* Adjust button size on mobile */
+  .prevButton,
+  .nextButton {
+    padding: 8px;
+    font-size: 1.2rem;
+  }
+
+  /* Adjust dot size on mobile */
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Adjust banner content position */
+  .bannerContent {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .bannerContent h2 {
+    font-size: 1.5rem; /* Adjusted size */
+  }
+
+  .bannerContent p {
+    font-size: 1rem;
+  }
+
+  .shopNowButton {
+    font-size: 1rem; /* Adjusted size */
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    height: 200px; /* Further reduced height for very small screens */
+  }
+
+  /* Adjust button size on smaller mobile screens */
+  .prevButton,
+  .nextButton {
+    padding: 6px;
+    font-size: 1rem;
+  }
+
+  /* Adjust dot size for very small screens */
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* Adjust banner content position */
+  .bannerContent {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .bannerContent h2 {
+    font-size: 1.2rem;
+  }
+
+  .bannerContent p {
+    font-size: 0.9rem;
+  }
+
+  .shopNowButton {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+}
+
+
+
+/* .carousel {
+  position: relative;
+  width: 100%;
+  height: 550px; 
+  overflow: hidden;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+
+.carouselImage {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+
+.carouselImage.active {
+  opacity: 1;
+}
+
+.prevButton,
+.nextButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.prevButton {
+  left: 20px;
+}
+
+.nextButton {
+  right: 20px;
+}
+
+.dotsContainer {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.5s ease, transform 0.3s ease;
+}
+
+.activeDot {
+  background-color: #2d6a4f;
+  transform: scale(1.2);
+}
+
+
+@media (max-width: 768px) {
+  .carousel {
+    height: 250px;
+  }
+} */
