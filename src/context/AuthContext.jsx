@@ -74,44 +74,43 @@
 // ==========================
 import { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext();
-
-export const useAuth = () => useContext(AuthContext);
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
-  const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null); // { token, role }
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("jwtToken");
-    const storedRole = localStorage.getItem("role");
-
-    if (storedToken) setToken(storedToken);
-    if (storedRole) setRole(storedRole);
-
-    setLoading(false);
-  }, []);
-
-  const login = (jwtToken, roleName) => {
-    localStorage.setItem("jwtToken", jwtToken);
-    localStorage.setItem("role", roleName);
-
-    setToken(jwtToken);
-    setRole(roleName);
+  // Get token and role from localStorage
+  const getAuth = () => {
+    const token = localStorage.getItem("jwtToken");
+    const role = localStorage.getItem("userRole");
+    return token ? { token, role } : null;
   };
 
+  // Load user on mount
+  useEffect(() => {
+    const auth = getAuth();
+    if (auth) setUser(auth);
+  }, []);
+
+  // LOGIN: store token & role
+  const login = (token, role) => {
+    localStorage.setItem("jwtToken", token);
+    localStorage.setItem("userRole", role);
+    setUser({ token, role });
+  };
+
+  // LOGOUT
   const logout = () => {
     localStorage.removeItem("jwtToken");
-    localStorage.removeItem("role");
-
-    setToken(null);
-    setRole(null);
+    localStorage.removeItem("userRole");
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, role, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

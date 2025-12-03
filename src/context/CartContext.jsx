@@ -466,354 +466,157 @@
 
 
 
-import axios from "axios";
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import config from "../config/apiconfig";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
-const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [token, setToken] = useState("");
-  const navigate = useNavigate();
+// import { createContext, useContext, useEffect, useState } from "react";
+// import axios from "axios";
+// import config from "../config/apiconfig";
+// import { toast } from "react-toastify";
+// import { useNavigate } from "react-router-dom";
 
-  useEffect(() => {
-    const storedTokenData = localStorage.getItem("ecommerce_login");
-    if (storedTokenData) {
-      try {
-        const tokenData = JSON.parse(storedTokenData);
-        if (tokenData?.jwtToken) {
-          setIsUserLoggedIn(true);
-          setToken(tokenData.jwtToken);
-        } else {
-          localStorage.removeItem("ecommerce_login");
-          setIsUserLoggedIn(false);
-          setToken("");
-        }
-      } catch (error) {
-        console.error("Error parsing token data:", error);
-        localStorage.removeItem("ecommerce_login");
-      }
-    }
-  }, []);
+// const CartContext = createContext();
 
-  const fetchCart = useCallback(async () => {
-    if (!isUserLoggedIn || !token) {
-      const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
-      setCart(localCart);
-      console.log("Using local cart for guest user:", localCart);
-      return;
-    }
+// export const CartProvider = ({ children }) => {
+//   const navigate = useNavigate();
+//   const [cart, setCart] = useState([]);
+//   const [loading, setLoading] = useState(false);
 
-    try {
-      const response = await axios.get(`${config.BASE_URL}/cart/view`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const cartData = Array.isArray(response.data.cartItems)
-        ? response.data.cartItems.map((item) => {
-            console.log("Backend cart item:", item);
-            return {
-              id: item.id,
-              productId: item.productId,
-              variantId: item.variantId || null,
-              quantity: item.quantity || 1,
-              name: item.productName || item.name || "Unnamed Product",
-              price:
-                item.type === "TERRARIUM"
-                  ? item.terrariumPrice
-                  : item.price || 0,
-              image:
-                item.type === "TERRARIUM"
-                  ? item.terrariumImg
-                  : item.imageUrls?.[0] || "/placeholder.jpg",
-              color: item.color || null,
-              type: item.type || "OTHER",
-            };
-          })
-        : [];
-      setCart(cartData);
-      console.log("Normalized cart data:", cartData);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-      if (error.response?.status === 401) {
-        toast.error("Session expired. Please log in again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        localStorage.removeItem("ecommerce_login");
-        setIsUserLoggedIn(false);
-        setToken("");
-        setCart([]);
-        navigate("/login");
-      } else {
-        toast.error("Failed to fetch cart.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setCart([]);
-      }
-    }
-  }, [isUserLoggedIn, token, navigate]);
+//   // 🔐 GET TOKEN HELPER
+//   const getToken = () => {
+//     const token = localStorage.getItem("jwtToken");
+//     return token ? JSON.parse(token) : null;
+//   };
 
-  useEffect(() => {
-    fetchCart();
-  }, [isUserLoggedIn, fetchCart]);
+//   // 📌 FETCH CART ON LOAD
+//   const fetchCart = async () => {
+//     const token = getToken();
+//     if (!token) return; // Not logged in
 
-  useEffect(() => {
-    if (!isUserLoggedIn) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart, isUserLoggedIn]);
+//     try {
+//       const response = await axios.get(
+//         `${config.BASE_URL}/api/cart/get`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
 
-  const addToCart = async (product, variantId = null, quantity = 1) => {
-    const isTerrarium = product.type === "TERRARIUM";
-    const newItem = {
-      id: product.id,
-      productId: product.id,
-      variantId: isTerrarium ? null : variantId,
-      quantity,
-      name: product.name || "Unnamed Product",
-      price: isTerrarium
-        ? product.terrariumPrice
-        : product.variants?.find((v) => v.id === variantId)?.price || 0,
-      image: isTerrarium
-        ? product.terrariumImg
-        : product.variants?.find((v) => v.id === variantId)?.imageUrls?.[0] || "/placeholder.jpg",
-      color: isTerrarium
-        ? null
-        : product.variants?.find((v) => v.id === variantId)?.color || null,
-      type: product.type || "OTHER",
-    };
+//       setCart(response.data || []);
+//     } catch (err) {
+//       console.error("Cart Fetch Error:", err);
+//       if (err.response?.status === 401) {
+//         toast.error("Login expired. Please log in again.");
+//         navigate("/login");
+//       }
+//     }
+//   };
 
-    console.log("Adding to cart:", newItem);
-    console.log("JWT Token:", token ? token : "No token");
+//   useEffect(() => {
+//     fetchCart();
+//   }, []);
 
-    if (!isUserLoggedIn || !token) {
-      const updatedCart = [...cart, newItem];
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      toast.success(`${newItem.name} added to cart!`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+//   // 🟩 ADD TO CART
+//   const addToCart = async (product, variantId, quantity) => {
+//     const token = getToken();
 
-    try {
-      // Update local cart immediately
-      setCart((prevCart) => [...prevCart, newItem]);
-    
-      const params = new URLSearchParams();
-      params.append("id", isTerrarium ? product.id : variantId);
-      params.append("quantity", quantity);
-      params.append("type", newItem.type);
-    
-      const url = `${config.BASE_URL}/cart/add?${params.toString()}`;
-    
-      console.log("Sending request to:", url);
-    
-      await axios.post(url, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    
-      await fetchCart();
-      toast.success(`${newItem.name} added to cart!`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      console.error("Error adding to cart:", {
-        message: error.message,
-        response: error.response
-          ? {
-              status: error.response.status,
-              data: error.response.data,
-              headers: error.response.headers,
-            }
-          : null,
-      });
-    
-      if (error.response?.status === 401) {
-        toast.error("Session expired. Please log in again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        localStorage.removeItem("ecommerce_login");
-        setIsUserLoggedIn(false);
-        setToken("");
-        setCart([]);
-        navigate("/login");
-      } else {
-        toast.error(
-          error.response?.data?.message || "Failed to add item to cart.",
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
-        );
-        await fetchCart(); // Sync with backend cart
-      }
-    }
-    
-  };
+//     // 🔐 If not logged in → redirect to login
+//     if (!token) {
+//       toast.error("Please login to add items");
+//       navigate("/login");
+//       return;
+//     }
 
-  const updateQuantity = async (id, change) => {
-    const updatedItem = cart.find(
-      (item) => item.variantId === id || (item.productId === id && item.type === "TERRARIUM")
-    );
-    if (!updatedItem) return;
+//     // 🧩 Build proper payload
+//     const payload = {
+//       productId: product.id,
+//       variantId: variantId || null, // Terrarium → null
+//       quantity: quantity ?? 1,
+//     };
 
-    const newQuantity = updatedItem.quantity + change;
-    if (newQuantity < 1) return removeFromCart(id);
+//     console.log("ADD PAYLOAD:", payload);
 
-    const updatedCart = cart.map((item) =>
-      item.variantId === id || (item.productId === id && item.type === "TERRARIUM")
-        ? { ...item, quantity: newQuantity }
-        : item
-    );
-    setCart(updatedCart);
+//     try {
+//       const response = await axios.post(
+//         `${config.BASE_URL}/api/cart/add`,
+//         payload,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
 
-    if (!isUserLoggedIn || !token) {
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      toast.success("Cart updated!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+//       setCart(response.data);
+//       toast.success("Added to cart!");
+//       return response.data;
+//     } catch (err) {
+//       console.error("Add to Cart Error:", err);
+//       toast.error("Cannot add item");
+//       throw err;
+//     }
+//   };
 
-    try {
-      if (updatedItem.type === "TERRARIUM") {
-        await axios.post(
-          `${config.BASE_URL}/cart/update/${updatedItem.productId}?quantity=${newQuantity}`,
-          { type: "TERRARIUM" },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      } else {
-        await axios.post(
-          `${config.BASE_URL}/cart/update/${id}?quantity=${newQuantity}`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      }
-      await fetchCart();
-    } catch (error) {
-      console.error("Error updating quantity:", error);
-      if (error.response?.status === 401) {
-        toast.error("Session expired. Please log in again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        localStorage.removeItem("ecommerce_login");
-        setIsUserLoggedIn(false);
-        setToken("");
-        setCart([]);
-        navigate("/login");
-      } else {
-        toast.error("Failed to update quantity.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        await fetchCart();
-      }
-    }
-  };
+//   // 🟦 UPDATE QUANTITY
+//   const updateQuantity = async (cartItemId, quantity) => {
+//     const token = getToken();
 
-  const removeFromCart = async (id) => {
-    const item = cart.find(
-      (item) => item.variantId === id || (item.productId === id && item.type === "TERRARIUM")
-    );
-    if (!item) return;
+//     try {
+//       const response = await axios.put(
+//         `${config.BASE_URL}/api/cart/update/${cartItemId}`,
+//         { quantity },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
 
-    if (!isUserLoggedIn) {
-      const updatedCart = cart.filter(
-        (item) => item.variantId !== id && item.productId !== id
-      );
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      toast.success("Item removed from cart!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+//       setCart(response.data);
+//     } catch (err) {
+//       console.error("Update Error:", err);
+//       toast.error("Failed to update quantity");
+//     }
+//   };
 
-    try {
-      const updatedCart = cart.filter(
-        (item) => item.variantId !== id && item.productId !== id
-      );
-      setCart(updatedCart);
-      if (item.type === "TERRARIUM") {
-        await axios.delete(`${config.BASE_URL}/cart/remove/${item.productId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.delete(`${config.BASE_URL}/cart/remove/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      await fetchCart();
-      toast.success("Item removed from cart!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    } catch (error) {
-      console.error("Error removing item:", error);
-      if (error.response?.status === 401) {
-        toast.error("Session expired. Please log in again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        localStorage.removeItem("ecommerce_login");
-        setIsUserLoggedIn(false);
-        setToken("");
-        setCart([]);
-        navigate("/login");
-      } else {
-        toast.error("Failed to remove item.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        await fetchCart();
-      }
-    }
-  };
+//   // 🟥 REMOVE FROM CART
+//   const removeFromCart = async (cartItemId) => {
+//     const token = getToken();
 
-  const totalUniqueProducts = cart.length;
+//     try {
+//       const response = await axios.delete(
+//         `${config.BASE_URL}/api/cart/delete/${cartItemId}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
 
-  // ✅ Add this method
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem("cartItems"); // Optional: if you're storing it in localStorage
-  };
+//       setCart(response.data);
+//       toast.success("Item removed");
+//     } catch (err) {
+//       console.error("Delete Error:", err);
+//       toast.error("Failed to remove item");
+//     }
+//   };
 
-  return (
-    <CartContext.Provider
-      value={{
-        cart,
-        totalUniqueProducts,
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
-};
+//   return (
+//     <CartContext.Provider
+//       value={{
+//         cart,
+//         loading,
+//         addToCart,
+//         updateQuantity,
+//         removeFromCart,
+//         fetchCart,
+//       }}
+//     >
+//       {children}
+//     </CartContext.Provider>
+//   );
+// };
 
-function useCart() {
-  return useContext(CartContext);
-}
+// export const useCart = () => useContext(CartContext);
 
-export { useCart };

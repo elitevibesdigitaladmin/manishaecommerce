@@ -495,234 +495,547 @@
 
 // export default Cart;
 
+// import React, { useState, useCallback } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import styles from "./Cart.module.css";
+// import { useCart } from "../../context/CartContext";
+// import { toast } from "react-toastify";
+// import { RiDeleteBin6Line } from "react-icons/ri";
 
-// =============================
+// const Cart = () => {
+//   const { cart, updateQuantity, removeFromCart } = useCart();
+//   const navigate = useNavigate();
 
-import React, { useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import styles from "./Cart.module.css";
-import { useCart } from "../../context/CartContext";
+//   const [couponCode, setCouponCode] = useState("");
+//   const [discount, setDiscount] = useState(0);
+
+//   const deliveryFee = 15;
+
+//   const totalPrice = cart.reduce(
+//     (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
+//     0
+//   );
+
+//   const totalItems = cart.reduce(
+//     (acc, item) => acc + (item.quantity || 0),
+//     0
+//   );
+
+//   const subtotal = totalPrice + deliveryFee - discount;
+
+//   // 🔥 Quantity update logic
+//   const handleUpdateQuantity = useCallback(
+//     (id, change) => {
+//       const item = cart.find(
+//         (i) =>
+//           i.variantId === id ||
+//           (i.productId === id && i.type === "TERRARIUM")
+//       );
+
+//       if (!item) return;
+
+//       const newQty = item.quantity + change;
+
+//       if (newQty < 1) {
+//         handleRemoveFromCart(id);
+//         return;
+//       }
+
+//       updateQuantity(id, change);
+//     },
+//     [cart, updateQuantity]
+//   );
+
+//   // 🔥 Remove item
+//   const handleRemoveFromCart = useCallback(
+//     (id) => {
+//       removeFromCart(id);
+//       toast.success("Item removed from cart");
+//     },
+//     [removeFromCart]
+//   );
+
+//   // 🔥 Coupon
+//   const handleApplyCoupon = () => {
+//     if (!couponCode.trim()) {
+//       toast.error("Enter coupon code");
+//       return;
+//     }
+
+//     if (couponCode.trim().toLowerCase() === "save10") {
+//       setDiscount(10);
+//       toast.success("Coupon applied (₹10 off)");
+//     } else {
+//       toast.error("Invalid coupon");
+//       setDiscount(0);
+//     }
+//   };
+
+//   // 🔐 CHECK JWT BEFORE CHECKOUT
+//   const handleCheckout = () => {
+//     const jwt = localStorage.getItem("jwtToken");
+
+//     if (!jwt) {
+//       toast.error("Please log in first");
+//       navigate("/login", { state: { redirectTo: "/checkout" } });
+//       return;
+//     }
+
+//     navigate("/checkout");
+//   };
+
+//   return (
+//     <div className={styles.cartContainer}>
+//       <h2 className={styles.title}>My Shopping Cart</h2>
+
+//       <div className={styles.cartWrapper}>
+//         {/* LEFT SIDE - ITEMS */}
+//         <div className={styles.cartItems}>
+//           <table className={styles.cartTable}>
+//             <thead>
+//               <tr>
+//                 <th>Product</th>
+//                 <th>Price</th>
+//                 <th>Qty</th>
+//                 <th>Remove</th>
+//               </tr>
+//             </thead>
+
+//             <tbody>
+//               {cart.length === 0 ? (
+//                 <tr>
+//                   <td colSpan="4" className={styles.emptyCart}>
+//                     Your cart is empty.
+//                   </td>
+//                 </tr>
+//               ) : (
+//                 cart.map((item) => (
+//                   <tr key={item.variantId || item.productId}>
+//                     <td className={styles.productInfo}>
+//                       <img
+//                         src={
+//                           item.image
+//                             ? item.image.startsWith("http")
+//                               ? item.image
+//                               : `data:image/jpeg;base64,${item.image}`
+//                             : "/placeholder.jpg"
+//                         }
+//                         alt={item.name}
+//                         className={styles.cartImage}
+//                       />
+
+//                       <div className={styles.productDetails}>
+//                         <span className={styles.productName}>
+//                           {item.name}
+//                         </span>
+
+//                         {item.color && (
+//                           <span className={styles.productDescription}>
+//                             Color: {item.color}
+//                           </span>
+//                         )}
+
+//                         {item.type === "TERRARIUM" && (
+//                           <span className={styles.productDescription}>
+//                             Type: Terrarium
+//                           </span>
+//                         )}
+//                       </div>
+//                     </td>
+
+//                     <td>₹{item.price.toFixed(2)}</td>
+
+//                     <td>
+//                       <div className={styles.quantityControls}>
+//                         <button
+//                           onClick={() =>
+//                             handleUpdateQuantity(
+//                               item.variantId || item.productId,
+//                               -1
+//                             )
+//                           }
+//                         >
+//                           -
+//                         </button>
+
+//                         <span>{item.quantity}</span>
+
+//                         <button
+//                           onClick={() =>
+//                             handleUpdateQuantity(
+//                               item.variantId || item.productId,
+//                               1
+//                             )
+//                           }
+//                         >
+//                           +
+//                         </button>
+//                       </div>
+//                     </td>
+
+//                     <td>
+//                       <RiDeleteBin6Line
+//                         onClick={() =>
+//                           handleRemoveFromCart(
+//                             item.variantId || item.productId
+//                           )
+//                         }
+//                         className={styles.removeButton}
+//                       />
+//                     </td>
+//                   </tr>
+//                 ))
+//               )}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         {/* RIGHT SIDE - SUMMARY */}
+//         <div className={styles.cartSummary}>
+//           <h3>Cart Summary</h3>
+
+//           <div className={styles.summaryRow}>
+//             <span>Items ({totalItems})</span>
+//             <span>₹{totalPrice.toFixed(2)}</span>
+//           </div>
+
+//           <div className={styles.summaryRow}>
+//             <span>Delivery Charges</span>
+//             <span>₹{deliveryFee}</span>
+//           </div>
+
+//           <div className={styles.summaryRow}>
+//             <span>Discount</span>
+//             <span>- ₹{discount}</span>
+//           </div>
+
+//           <div className={styles.summaryRow}>
+//             <strong>Total Amount</strong>
+//             <strong>₹{subtotal.toFixed(2)}</strong>
+//           </div>
+
+//           <button className={styles.checkoutButton} onClick={handleCheckout}>
+//             Checkout
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Cart;
+
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import { RiDeleteBin6Line } from "react-icons/ri";
+// import styles from "./Cart.module.css";
+// import config from "../../config/apiconfig";
+// import { useAuth } from "../../context/AuthContext";
+
+// const Cart = () => {
+//   const navigate = useNavigate();
+//   const { user } = useAuth(); 
+
+//   const [cart, setCart] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   // Fetch cart items
+//   const fetchCart = async () => {
+//     if (!user?.token) {
+//       setCart([]);
+//       setLoading(false);
+//       return;
+//     }
+//     try {
+//       const res = await axios.get(`${config.BASE_URL}/api/cart/view`, {
+//         headers: { Authorization: `Bearer ${user.token}` },
+//       });
+//       setCart(res.data.cartItems || []);
+//     } catch (err) {
+//       console.error("Fetch cart error:", err);
+//       toast.error("Failed to load cart");
+//       setCart([]);
+//     }
+//     setLoading(false);
+//   };
+
+//   useEffect(() => {
+//     fetchCart();
+//   }, [user?.token]);
+
+//   // Update quantity (increment or decrement)
+//   const updateQuantity = async (variantId, increment) => {
+//     if (!user?.token) return;
+
+//     try {
+//       await axios.post(
+//         `${config.BASE_URL}/api/cart/updateQuantity`,
+//         null, // body not required
+//         {
+//           headers: { Authorization: `Bearer ${user.token}` },
+//           params: { variantId, quantity: increment }, // send +1 or -1
+//         }
+//       );
+//       fetchCart(); // refresh cart after update
+//     } catch (err) {
+//       console.error("Update qty error:", err);
+//       toast.error(err.response?.data?.message || "Error updating quantity");
+//     }
+//   };
+
+//   // Remove item
+//   const removeItem = async (variantId) => {
+//     if (!user?.token) return;
+
+//     try {
+//       await axios.delete(`${config.BASE_URL}/api/cart/remove`, {
+//         headers: { Authorization: `Bearer ${user.token}` },
+//         params: { variantId },
+//       });
+//       toast.success("Item removed");
+//       fetchCart();
+//     } catch (err) {
+//       console.error("Remove item error:", err);
+//       toast.error(err.response?.data?.message || "Failed to remove item");
+//     }
+//   };
+
+//   // Checkout
+//   const checkout = () => {
+//     if (!user?.token) return navigate("/login", { state: { redirectTo: "/checkout" } });
+//     navigate("/checkout");
+//   };
+
+//   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+//   if (loading) return <p>Loading cart...</p>;
+
+//   return (
+//     <div className={styles.cartContainer}>
+//       <h2 className={styles.title}>My Shopping Cart</h2>
+
+//       {cart.length === 0 ? (
+//         <p>Your cart is empty.</p>
+//       ) : (
+//         <table className={styles.cartTable}>
+//           <thead>
+//             <tr>
+//               <th>Product</th>
+//               <th>Price</th>
+//               <th>Qty</th>
+//               <th>Remove</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {cart.map((item) => (
+//               <tr key={item.variantId}>
+//                 <td className={styles.productInfo}>
+//                   <img
+//                     src={
+//                       item.images?.[0]?.startsWith("http")
+//                         ? item.images[0]
+//                         : `data:image/jpeg;base64,${item.images[0]}`
+//                     }
+//                     alt={item.productName}
+//                     className={styles.cartImage}
+//                   />
+//                   <span>{item.productName}</span>
+//                 </td>
+//                 <td>₹{item.price}</td>
+//                 <td>
+//                   <button onClick={() => updateQuantity(item.variantId, -1)}>-</button>
+//                   <span>{item.quantity}</span>
+//                   <button onClick={() => updateQuantity(item.variantId, +1)}>+</button>
+//                 </td>
+//                 <td>
+//                   <RiDeleteBin6Line
+//                     onClick={() => removeItem(item.variantId)}
+//                     className={styles.removeButton}
+//                   />
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       )}
+
+//       <div className={styles.summaryBox}>
+//         <h3>Total: ₹{total}</h3>
+//         <button className={styles.checkoutButton} onClick={() => checkout()}>
+//           Checkout
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Cart;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import styles from "./Cart.module.css";
+import config from "../../config/apiconfig";
+import { useAuth } from "../../context/AuthContext";
 
 const Cart = () => {
-  const { cart = [], updateQuantity, removeFromCart } = useCart();
   const navigate = useNavigate();
-  const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const deliveryFee = 15.0;
+  const { user, loading } = useAuth();
+  const token = user?.token;
 
-  console.log("Cart data in Cart component:", cart); // Debug cart data
+  const [cart, setCart] = useState([]);
+  const [loadingCart, setLoadingCart] = useState(true);
 
-  const totalPrice = cart.reduce(
-    (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
-    0
-  );
-  const subtotal = totalPrice + deliveryFee - discount;
-  const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 0), 0);
-
-  const handleUpdateQuantity = useCallback(
-    (id, change) => {
-      const item = cart.find(
-        (item) => item.variantId === id || (item.productId === id && item.type === "TERRARIUM")
-      );
-      if (!item) {
-        console.warn(`Item with ID ${id} not found in cart`);
-        return;
-      }
-
-      const newQuantity = item.quantity + change;
-      if (newQuantity < 1) {
-        handleRemoveFromCart(id);
-      } else {
-        updateQuantity(id, change);
-      }
-    },
-    [cart, updateQuantity]
-  );
-
-  const handleRemoveFromCart = useCallback(
-    (id) => {
-      removeFromCart(id);
-      toast.success("Item removed from cart!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-    },
-    [removeFromCart]
-  );
-
-  const handleApplyCoupon = () => {
-    if (!couponCode.trim()) {
-      toast.error("Please enter a coupon code.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+  // Fetch cart items
+  const fetchCart = async () => {
+    if (!token) {
+      setCart([]);
+      setLoadingCart(false);
       return;
     }
-    if (couponCode.trim().toLowerCase() === "save10") {
-      setDiscount(10);
-      toast.success("Coupon applied successfully! ₹10 discount added.", {
-        position: "top-right",
-        autoClose: 3000,
+
+    try {
+      const res = await axios.get(`${config.BASE_URL}/api/cart/view`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-    } else {
-      setDiscount(0);
-      toast.error("Invalid coupon code.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      setCart(res.data.cartItems || []);
+    } catch (err) {
+      console.error("Fetch cart error:", err);
+      toast.error("Failed to load cart");
+      setCart([]);
+    }
+    setLoadingCart(false);
+  };
+
+  useEffect(() => {
+    if (!loading) fetchCart();
+  }, [token, loading]);
+
+  const updateQuantity = async (variantId, increment) => {
+    if (!token) return;
+
+    try {
+      await axios.post(
+        `${config.BASE_URL}/api/cart/updateQuantity`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { variantId, quantity: increment },
+        }
+      );
+      fetchCart();
+    } catch (err) {
+      console.error("Update qty error:", err);
+      toast.error(err.response?.data?.message || "Error updating quantity");
     }
   };
 
-  const handleCheckout = () => {
-    const tokenData = JSON.parse(localStorage.getItem("ecommerce_login") || "{}");
-    if (!tokenData?.jwtToken) {
-      toast.error("Please log in to proceed to checkout.", {
-        position: "top-right",
-        autoClose: 3000,
+  const removeItem = async (variantId) => {
+    if (!token) return;
+
+    try {
+      await axios.delete(`${config.BASE_URL}/api/cart/remove`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { variantId },
       });
-      navigate("/login");
-    } else {
-      navigate("/checkout");
+      toast.success("Item removed");
+      fetchCart();
+    } catch (err) {
+      console.error("Remove item error:", err);
+      toast.error(err.response?.data?.message || "Failed to remove item");
     }
   };
+
+  const checkout = () => {
+    if (!token) {
+      navigate("/login", { state: { redirectTo: "/checkout" } });
+      return;
+    }
+
+    navigate("/checkout");
+  };
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  if (loadingCart) return <p>Loading cart...</p>;
 
   return (
     <div className={styles.cartContainer}>
       <h2 className={styles.title}>My Shopping Cart</h2>
-      <div className={styles.cartWrapper}>
-        <div className={styles.cartItems}>
-          <table className={styles.cartTable}>
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Remove</th>
+
+      {cart.length === 0 ? (
+        <p>Your cart is empty.</p>
+      ) : (
+        <table className={styles.cartTable}>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cart.map((item) => (
+              <tr key={item.variantId}>
+                <td className={styles.productInfo}>
+                  <img
+                    src={
+                      item.images?.[0]?.startsWith("http")
+                        ? item.images[0]
+                        : `data:image/jpeg;base64,${item.images[0]}`
+                    }
+                    alt={item.productName}
+                    className={styles.cartImage}
+                  />
+                  <span>{item.productName}</span>
+                </td>
+                <td>₹{item.price}</td>
+                <td>
+                  <button onClick={() => updateQuantity(item.variantId, -1)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.variantId, +1)}>+</button>
+                </td>
+                <td>
+                  <RiDeleteBin6Line
+                    onClick={() => removeItem(item.variantId)}
+                    className={styles.removeButton}
+                  />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {cart.length === 0 ? (
-                <tr>
-                  <td colSpan="4" className={styles.emptyCart}>
-                    Your cart is empty.
-                  </td>
-                </tr>
-              ) : (
-                cart.map((item) => (
-                  <tr
-                    key={item.variantId || item.productId}
-                    className={styles.cartItem}
-                  >
-                    <td className={styles.productInfo}>
-                      {/* <img
-                        src={item.image || "/placeholder.jpg"}
-                        alt={item.name || "Product Image"}
-                        className={styles.cartImage}
-                        onError={(e) => {
-                          console.warn(`Failed to load image for ${item.name}: ${item.image}`);
-                          e.target.src = "/placeholder.jpg";
-                        }}
-                      /> */}
-                      <img
-  src={
-    item.image
-      ? item.image
-      : item.type === "TERRARIUM"
-      ? "/images/terrarium-placeholder.jpg" // Make sure this image exists in your public folder
-      : "/placeholder.jpg"
-  }
-  alt={item.name || "Product Image"}
-  className={styles.cartImage}
-  onError={(e) => {
-    console.warn(`Image load failed for: ${item.name || 'Unknown'} (${item.image})`);
-    e.target.src = "/placeholder.jpg"; // Final fallback
-  }}
-/>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-                      <div className={styles.productDetails}>
-                        <span className={styles.productName}>
-                          {item.name || "Unnamed Product"}
-                        </span>
-                        {item.color && (
-                          <span className={styles.productDescription}>
-                            Color: {item.color}
-                          </span>
-                        )}
-                        {item.type === "TERRARIUM" && (
-                          <span className={styles.productDescription}>
-                            Type: Terrarium
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td>₹{(item.price || 0).toFixed(2)}</td>
-                    <td>
-                      <div className={styles.quantityControls}>
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.variantId || item.productId,
-                              -1
-                            )
-                          }
-                        >
-                          -
-                        </button>
-                        <span>{item.quantity || 1}</span>
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.variantId || item.productId,
-                              1
-                            )
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <RiDeleteBin6Line
-                        onClick={() =>
-                          handleRemoveFromCart(item.variantId || item.productId)
-                        }
-                        className={styles.removeButton}
-                      />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className={styles.cartSummary}>
-          <div className={styles.summarySection}>
-            <h3>Total</h3>
-            <div className={styles.summaryRow}>
-              <span>Price ({totalItems} items)</span>
-              <span>₹{totalPrice.toFixed(2)}</span>
-            </div>
-            <div className={styles.summaryRow}>
-              <span>Delivery Charges</span>
-              <span>₹{deliveryFee.toFixed(2)}</span>
-            </div>
-            <div className={styles.summaryRow}>
-              <span>Discount</span>
-              <span>-₹{discount.toFixed(2)}</span>
-            </div>
-            <div className={styles.summaryRow}>
-              <span className={styles.subtotalLabel}>Total Amount</span>
-              <span className={styles.subtotal}>₹{subtotal.toFixed(2)}</span>
-            </div>
-
-            <button className={styles.checkoutButton} onClick={handleCheckout}>
-              Checkout
-            </button>
-          </div>
-        </div>
+      <div className={styles.summaryBox}>
+        <h3>Total: ₹{total}</h3>
+        <button className={styles.checkoutButton} onClick={checkout}>
+          Checkout
+        </button>
       </div>
     </div>
   );

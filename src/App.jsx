@@ -179,7 +179,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { CartProvider } from "./context/CartContext";
+// import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -221,12 +221,13 @@ import Users from "./admin/pages/Users/Users";
 import { Navigate } from "react-router-dom";
 // Protected Route
 import ProtectedRoute from "./utils/ProtectedRoute";
+import CategoryPage from "./admin/pages/Category/PlantCategory";
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <CartProvider>
+        {/* <CartProvider> */}
           <AdminProvider>
             <ToastContainer
               position="top-right"
@@ -307,6 +308,11 @@ const App = () => {
                     </ProtectedRoute>
                   }
                 />
+                {/* <Route element={<ProtectedRoute />}>
+  <Route path="/checkout" element={<Checkout />} />
+  <Route path="/order-confirm" element={<OrderConfirm />} />
+</Route> */}
+
 
                 <Route
                   path="/my-orders"
@@ -328,7 +334,7 @@ const App = () => {
   }
 >
                 <Route index element={<AdminDashboard />} />
-                <Route path="/admin/plant-category" element={<PlantCategory />} />
+                <Route path="/admin/plant-category" element={<CategoryPage/>} />
                 <Route path="/admin/pot-category" element={<PotCategory />} />
                 <Route path="/admin/add-product" element={<AddProduct />} />
                 <Route path="/admin/add-product/:productId" element={<AddProduct />} />
@@ -342,7 +348,7 @@ const App = () => {
 
             <WhatsAppBtn />
           </AdminProvider>
-        </CartProvider>
+        {/* </CartProvider> */}
       </AuthProvider>
     </Router>
   );

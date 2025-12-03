@@ -12,8 +12,8 @@ import Modal from "../../../components/Modal/Modal";
 
 const PotCategory = () => {
   const navigate = useNavigate();
-  const tokenData = JSON.parse(localStorage.getItem("ecommerce_login"));
-  const token = tokenData?.jwtToken;
+  // const tokenData = JSON.parse(localStorage.getItem("ecommerce_login"));
+  const token = localStorage.getItem("jwtToken");
 
   const [potCategories, setPotCategories] = useState([]);
   const [editingCategoryId, setEditingCategoryId] = useState(null);

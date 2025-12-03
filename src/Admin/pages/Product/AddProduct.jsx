@@ -2797,12 +2797,19 @@
 
 
 
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import config from "../../../config/apiconfig";
+import "./AddProduct.css"; // <-- NEW CSS FILE
 
 const AddProduct = () => {
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("jwtToken");
+    setToken(storedToken);
+  }, []);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -2812,78 +2819,89 @@ const AddProduct = () => {
     pickupLocation: "",
   });
 
+  const [categories, setCategories] = useState([]);
   const [variants, setVariants] = useState([
     { color: "", size: "", price: "", qty: "", images: [] }
   ]);
 
-  // Update product form fields
+  // Fetch Categories
+  const getCategories = async () => {
+    try {
+      const res = await axios.get(`${config.BASE_URL}/api/categories/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(res.data || []);
+    } catch (error) {
+      alert("Failed to fetch categories");
+    }
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    getCategories();
+  }, [token]);
+
+  // Form Change
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Update variant fields
+  // Variant Change
   const handleVariantChange = (index, field, value) => {
     const updated = [...variants];
     updated[index][field] = value;
     setVariants(updated);
   };
 
-  // Add new variant
+  // Add Variant
   const addVariant = () => {
     setVariants([...variants, { color: "", size: "", price: "", qty: "", images: [] }]);
   };
 
-  // Handle file upload for variants
+  // Image Upload
   const handleImageUpload = (index, files) => {
     const updated = [...variants];
-    updated[index].images = Array.from(files); // store File objects
+    updated[index].images = Array.from(files);
     setVariants(updated);
   };
 
-  // Submit product
+  // Submit Product
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("jwtToken");
 
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("category", form.category);
     formData.append("productType", form.productType);
+
     if (form.productType === "TERRARIUM") {
       formData.append("terrariumType", form.terrariumType);
     }
+
     formData.append("pickupLocation", form.pickupLocation);
 
-    // Append variants fields
     variants.forEach((v, index) => {
       formData.append(`variants[${index}].color`, v.color);
       formData.append(`variants[${index}].size`, v.size);
       formData.append(`variants[${index}].price`, v.price);
       formData.append(`variants[${index}].qty`, v.qty);
 
-      // Append each image as multipart file
       v.images.forEach((file) => {
         formData.append(`variants[${index}].images`, file);
       });
     });
 
     try {
-      const res = await axios.post(
-        `${config.BASE_URL}/api/product/add`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
-          }
-        }
-      );
+      await axios.post(`${config.BASE_URL}/api/product/add`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       alert("Product added successfully!");
-      console.log(res.data);
 
-      // Reset form
       setForm({
         name: "",
         description: "",
@@ -2892,123 +2910,148 @@ const AddProduct = () => {
         terrariumType: "",
         pickupLocation: "",
       });
+
       setVariants([{ color: "", size: "", price: "", qty: "", images: [] }]);
     } catch (err) {
-      console.error(err);
       alert("Failed to add product.");
     }
   };
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-      <h2>Add Product</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="product-container">
+      <h2 className="page-title">Add New Product</h2>
 
-        <input
-          name="name"
-          placeholder="Product Name"
-          value={form.name}
-          onChange={handleChange}
-        />
+      <form className="product-form" onSubmit={handleSubmit}>
+
+        {/* Product Fields */}
+        <div className="form-grid">
+          <input
+            name="name"
+            placeholder="Product Name"
+            value={form.name}
+            onChange={handleChange}
+            className="form-input"
+          />
+
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="form-input"
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
+
+          <select
+            name="productType"
+            value={form.productType}
+            onChange={handleChange}
+            className="form-input"
+          >
+            <option value="SIMPLE">Simple Product</option>
+            <option value="TERRARIUM">Terrarium Product</option>
+          </select>
+
+          {form.productType === "TERRARIUM" && (
+            <select
+              name="terrariumType"
+              value={form.terrariumType}
+              onChange={handleChange}
+              className="form-input"
+            >
+              <option value="">Select Terrarium Type</option>
+              <option value="SINGLE">Single</option>
+              <option value="KIT">Kit</option>
+            </select>
+          )}
+
+          <input
+            name="pickupLocation"
+            placeholder="Pickup Location"
+            value={form.pickupLocation}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
 
         <textarea
           name="description"
-          placeholder="Description"
+          placeholder="Product Description"
           value={form.description}
           onChange={handleChange}
-        />
+          className="textarea-input"
+        ></textarea>
 
-        <input
-          name="category"
-          placeholder="Category"
-          value={form.category}
-          onChange={handleChange}
-        />
+        {/* Variants Section */}
+        <h3 className="section-title">Product Variants</h3>
 
-        <select
-          name="productType"
-          value={form.productType}
-          onChange={handleChange}
-        >
-          <option value="SIMPLE">Simple</option>
-          <option value="TERRARIUM">Terrarium</option>
-        </select>
-
-        {form.productType === "TERRARIUM" && (
-          <select
-            name="terrariumType"
-            value={form.terrariumType}
-            onChange={handleChange}
-          >
-            <option value="">Select Terrarium Type</option>
-            <option value="SINGLE">Single</option>
-            <option value="KIT">Kit</option>
-          </select>
-        )}
-
-        <input
-          name="pickupLocation"
-          placeholder="Pickup Location"
-          value={form.pickupLocation}
-          onChange={handleChange}
-        />
-
-        <h3>Variants</h3>
         {variants.map((variant, index) => (
-          <div key={index} style={{ border: "1px solid #ccc", padding: 10, marginBottom: 10 }}>
+          <div className="variant-card" key={index}>
+            <div className="variant-grid">
+              <input
+                placeholder="Color"
+                value={variant.color}
+                onChange={(e) => handleVariantChange(index, "color", e.target.value)}
+                className="form-input"
+              />
 
-            <input
-              placeholder="Color"
-              value={variant.color}
-              onChange={(e) => handleVariantChange(index, "color", e.target.value)}
-            />
+              <input
+                placeholder="Size"
+                value={variant.size}
+                onChange={(e) => handleVariantChange(index, "size", e.target.value)}
+                className="form-input"
+              />
 
-            <input
-              placeholder="Size"
-              value={variant.size}
-              onChange={(e) => handleVariantChange(index, "size", e.target.value)}
-            />
+              <input
+                placeholder="Price"
+                type="number"
+                value={variant.price}
+                onChange={(e) => handleVariantChange(index, "price", e.target.value)}
+                className="form-input"
+              />
 
-            <input
-              placeholder="Price"
-              type="number"
-              value={variant.price}
-              onChange={(e) => handleVariantChange(index, "price", e.target.value)}
-            />
+              <input
+                placeholder="Qty"
+                type="number"
+                value={variant.qty}
+                onChange={(e) => handleVariantChange(index, "qty", e.target.value)}
+                className="form-input"
+              />
+            </div>
 
-            <input
-              placeholder="Qty"
-              type="number"
-              value={variant.qty}
-              onChange={(e) => handleVariantChange(index, "qty", e.target.value)}
-            />
-
+            {/* File Upload */}
             <input
               type="file"
               multiple
+              accept="image/*"
               onChange={(e) => handleImageUpload(index, e.target.files)}
+              className="file-input"
             />
 
-            {/* Preview images */}
-            <div style={{ display: "flex", gap: 5, marginTop: 5 }}>
+            {/* Preview */}
+            <div className="image-preview-row">
               {variant.images.map((file, i) => (
                 <img
                   key={i}
                   src={URL.createObjectURL(file)}
                   alt="preview"
-                  width={50}
-                  height={50}
+                  className="preview-img"
                 />
               ))}
             </div>
           </div>
         ))}
 
-        <button type="button" onClick={addVariant}>
-          Add Variant
+        <button type="button" className="add-btn" onClick={addVariant}>
+          + Add Variant
         </button>
 
-        <button type="submit">Submit Product</button>
+        <button type="submit" className="submit-btn">
+          Submit Product
+        </button>
       </form>
     </div>
   );

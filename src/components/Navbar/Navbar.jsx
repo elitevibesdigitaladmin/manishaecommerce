@@ -4,166 +4,108 @@ import { BsCart } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/logo2.png";
-// import { Input } from "../Input/Input";
 import config from "../../config/apiconfig";
 import axios from "axios";
-import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Navbar = ({ onSearch }) => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const { totalUniqueProducts } = useCart(); // Get total cart unique products count
   const [searchQuery, setSearchQuery] = useState("");
   const [plantSubCategories, setPlantSubCategories] = useState([]);
   const [potSubCategories, setPotSubCategories] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
 
-  const tokenData = JSON.parse(localStorage.getItem("ecommerce_login"));
-  const token = tokenData?.jwtToken;
-
-  // Check login status on mount
-  useEffect(() => {
-    const token = localStorage.getItem("token"); // Or however you store auth
-    setIsLoggedIn(!!token);
-  }, []);
+  const isLoggedIn = !!user?.token;
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear token or user info
-    setIsLoggedIn(false);
+    logout();
     navigate("/login");
   };
 
   const handleInputChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    onSearch(query); // Pass the query to the parent component
+    onSearch(query);
   };
 
-  const navigate = useNavigate();
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleDropdown = (menu) => setOpenDropdown(openDropdown === menu ? null : menu);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const toggleDropdown = (menu) => {
-    setOpenDropdown(openDropdown === menu ? null : menu);
-  };
-
-  // fetch plants and pots categories
+  // fetch categories
   useEffect(() => {
     const fetchSubCategories = async () => {
       try {
         const plantRes = await axios.get(`${config.BASE_URL}/api/Allcategory`);
         setPlantSubCategories(plantRes.data);
-        console.log(plantRes.data);
 
         const potRes = await axios.get(`${config.BASE_URL}/api/pot-categories`);
         setPotSubCategories(potRes.data);
-        console.log(potRes.data);
       } catch (error) {
         console.error("Failed to fetch subcategories:", error);
       }
     };
-
     fetchSubCategories();
   }, []);
 
-  // AOS Init
+  // fetch cart count dynamically
   useEffect(() => {
-    AOS.init({
-      duration: 500,
-      offset: 100,
-      easing: "ease-in-out",
-      delay: 0,
-      once: true,
-    });
+    const fetchCartCount = async () => {
+      if (!user?.token) {
+        setCartCount(0);
+        return;
+      }
+      try {
+        const res = await axios.get(`${config.BASE_URL}/api/cart/view`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        const count = res.data.cartItems?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+        setCartCount(count);
+      } catch (err) {
+        console.error("Failed to fetch cart count:", err);
+        setCartCount(0);
+      }
+    };
+    fetchCartCount();
+  }, [user]);
+
+  useEffect(() => {
+    AOS.init({ duration: 500, offset: 100, easing: "ease-in-out", delay: 0, once: true });
   }, []);
 
   return (
     <>
-      {/* Top Navbar Section  */}
-
-      <section className={styles.topNavbar} data-aos="fade-up">
+      <section className={styles.topNavbar}>
         <div className={styles.title}>
           <span>
             Free Delivery Above ₹499 | <Link to="/plants">Shop Now</Link>
           </span>
           <span>Free Shipping on Orders Over 500</span>
           <span>
-            Customer Support :{" "}
-            <a
-              href="tel:+917028917456
-"
-            >
-              +917028917456
-            </a>
+            Customer Support: <a href="tel:+917028917456">+917028917456</a>
           </span>
         </div>
       </section>
 
-      {/* Main Navbar */}
       <header className={styles.navbar}>
         <div className={styles.logo}>
-          <Link to="/">
-            <img src={logo} alt="Green Gifts Logo" />
-          </Link>
+          <Link to="/"><img src={logo} alt="Green Gifts Logo" /></Link>
         </div>
 
-        <nav
-          className={`${styles.navLinks} ${
-            isMobileMenuOpen ? styles.active : ""
-          }`}
-        >
-          {/** Home **/}
-          <nav className={styles.navItem}>
-            <Link to="/">Home</Link>
-          </nav>
-
-          {/** Plants **/}
-          {/* <nav
-            className={styles.navItem}
-            onMouseEnter={() => setOpenDropdown("plants")}
-            onMouseLeave={() => setOpenDropdown(null)}
-            // onClick={() => toggleDropdown("plants")}
-          >
-            <Link to="/plants">Plants</Link>
-
-            {openDropdown === "plants" && (
-              <div
-                className={styles.dropdownMenu}
-                onClick={(e) => e.stopPropagation()}
-              >
-                
-                <Link to="/plants/audio">Indoor Plants</Link>
-                <Link to="/plants/gaming">Flowering Plants</Link>
-                <Link to="/plants/mobile">Low Maintenance Plants</Link>
-                <Link to="/plants/tv">Air Purifying Plants</Link>
-              </div>
-            )}
-          </nav> */}
+        <nav className={`${styles.navLinks} ${isMobileMenuOpen ? styles.active : ""}`}>
+          <nav className={styles.navItem}><Link to="/">Home</Link></nav>
 
           {/* Plants Dropdown */}
-          <nav
-            className={styles.navItem}
-            onMouseEnter={() => setOpenDropdown("plants")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
+          <nav className={styles.navItem} onMouseEnter={() => setOpenDropdown("plants")} onMouseLeave={() => setOpenDropdown(null)}>
             <Link to="/plants">Plants</Link>
-
             {openDropdown === "plants" && (
-              <div
-                className={styles.dropdownMenu}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
                 {plantSubCategories.map((sub, i) => (
-                  <Link
-                    key={i}
-                    to={`/plants/${sub.categoryName
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                  >
+                  <Link key={i} to={`/plants/${sub.categoryName.toLowerCase().replace(/\s+/g, "-")}`}>
                     {sub.categoryName}
                   </Link>
                 ))}
@@ -171,51 +113,13 @@ const Navbar = () => {
             )}
           </nav>
 
-          {/** Pots & Planters **/}
-          {/* <nav
-            className={styles.navItem}
-            onMouseEnter={() => setOpenDropdown("pots-planters")}
-            onMouseLeave={() => setOpenDropdown(null)}
-            // onClick={() => toggleDropdown("pots")}
-          >
-            <Link to="/pots-planters">Pots & Planters</Link>
-            {openDropdown === "pots-planters" && (
-              <div
-                className={styles.dropdownMenu}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Link to="/">Plastic Pots</Link>
-                <Link to="/">Ceramic Pots</Link>
-                <Link to="/">Metal Pots</Link>
-                <Link to="/">Hanging Pots</Link>
-                <Link to="/">Wooden Planters</Link>
-                <Link to="/">Basket Planters</Link>
-                <Link to="/">Plant Stands</Link>
-                <Link to="/">Seedling Trays</Link>
-              </div>
-            )}
-          </nav> */}
-
           {/* Pots Dropdown */}
-          <nav
-            className={styles.navItem}
-            onMouseEnter={() => setOpenDropdown("pots-planters")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
+          <nav className={styles.navItem} onMouseEnter={() => setOpenDropdown("pots-planters")} onMouseLeave={() => setOpenDropdown(null)}>
             <Link to="/pots-planters">Pots & Planters</Link>
-
             {openDropdown === "pots-planters" && (
-              <div
-                className={styles.dropdownMenu}
-                onClick={(e) => e.stopPropagation()}
-              >
+              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
                 {potSubCategories.map((sub, i) => (
-                  <Link
-                    key={i}
-                    to={`/pots-planters/${sub.potCategoryName
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                  >
+                  <Link key={i} to={`/pots-planters/${sub.potCategoryName.toLowerCase().replace(/\s+/g, "-")}`}>
                     {sub.potCategoryName}
                   </Link>
                 ))}
@@ -223,78 +127,44 @@ const Navbar = () => {
             )}
           </nav>
 
-          {/** Terrarium **/}
-          <nav className={styles.navItem}>
-            <Link to="/terrarium">Terrarium</Link>
-          </nav>
+          <nav className={styles.navItem}><Link to="/terrarium">Terrarium</Link></nav>
+          <nav className={styles.navItem}><Link to="/offers">Offers</Link></nav>
+          <nav className={styles.navItem}><Link to="/workshops">Workshops</Link></nav>
 
-          {/** Offers **/}
-          <nav className={styles.navItem}>
-            <Link to="/offers">Offers</Link>
-          </nav>
-
-          {/** Workshops **/}
-          <nav className={styles.navItem}>
-            <Link to="/workshops">Workshops</Link>
-          </nav>
-
-          {/* Search Bar */}
           <div className={styles.searchContainer}>
-            <nav className={styles.navLinks}>
-              {/* Other navigation links */}
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={handleInputChange}
-                className={styles.searchInput}
-              />
-            </nav>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleInputChange}
+              className={styles.searchInput}
+            />
           </div>
 
-          {/** Login **/}
-
-          <nav
-            className={styles.navIcon}
-            onMouseEnter={() => setOpenDropdown("login")}
-            onMouseLeave={() => setOpenDropdown(null)}
-            // onClick={() => toggleDropdown("pots")}
-          >
-            <Link to="/login">
-              <VscAccount />
-            </Link>
+          {/* Account */}
+          <nav className={styles.navIcon} onMouseEnter={() => setOpenDropdown("login")} onMouseLeave={() => setOpenDropdown(null)}>
+            <VscAccount />
             {openDropdown === "login" && (
-              <div
-                className={styles.dropdownMenu}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Link to="/account">My Profile</Link>
-                <Link to="/my-orders">My Orders</Link>
-                <Link to="/wishlist">Wishlist</Link>
-                <Link to="/login">Logout</Link>
+              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
+                {isLoggedIn ? (
+                  <>
+                    <Link to="/account">My Profile</Link>
+                    <Link to="/my-orders">My Orders</Link>
+                    <Link to="/wishlist">Wishlist</Link>
+                    <span onClick={handleLogout}>Logout</span>
+                  </>
+                ) : (
+                  <Link to="/login">Login</Link>
+                )}
               </div>
             )}
           </nav>
 
-          {/* <nav className={styles.navIcon}>
-          <Link to="/login">
-            <VscAccount />
-          </Link>
-        </nav> */}
-
-          {/* <div className={styles.navIcon}>
-          <Link to="/cart">
-            <BsCart />
-          </Link>
-        </div> */}
-
+          {/* Cart */}
           <div className={styles.navIcon}>
             <Link to="/cart" className={styles.cartLink}>
               <BsCart />
-
-              {totalUniqueProducts > 0 && (
-                <span className={styles.cartBadge}>{totalUniqueProducts}</span>
-              )}
+              {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
             </Link>
           </div>
         </nav>
@@ -310,6 +180,8 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
 
 // ==============
 

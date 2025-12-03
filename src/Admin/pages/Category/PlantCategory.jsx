@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import config from "../../../config/apiconfig";
 import styles from "./Category.module.css";
 import Button from "../../../components/Button/Button";
 import { Input } from "../../../components/Input/Input";
@@ -9,309 +8,231 @@ import { RiEditLine, RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineSaveAlt, MdOutlineCancel } from "react-icons/md";
 import { toast } from "react-toastify";
 import Modal from "../../../components/Modal/Modal";
+import config from "../../../config/apiconfig";
 
-const PlantCategory = () => {
+const CategoryPage = () => {
   const navigate = useNavigate();
-  const tokenData = JSON.parse(localStorage.getItem("ecommerce_login"));
-  const token = tokenData?.jwtToken;
+
+  // Load token
+  const [token, setToken] = useState(null);
 
   const [categories, setCategories] = useState([]);
-  const [editingCategoryId, setEditingCategoryId] = useState(null);
-  const [updatedCategoryName, setUpdatedCategoryName] = useState("");
+  const [editingId, setEditingId] = useState(null);
+
+  // EDIT states
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryType, setCategoryType] = useState("");
+
+  // ADD states
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryType, setNewCategoryType] = useState("");
+
+  // Modals
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [categoryIdToDelete, setCategoryIdToDelete] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Check token and fetch categories
+  // Category Types Dropdown Options
+  const categoryTypes = ["PRODUCT", "POT", "TERRARIUM"];
+
+  // Load token once
   useEffect(() => {
+    const storedToken = localStorage.getItem("jwtToken");
+    setToken(storedToken);
+  }, []);
+
+  // Load categories after token
+  useEffect(() => {
+    if (token === null) return;
+
     if (!token) {
-      toast.error("Session expired. Please log in again.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Session expired. Please log in again.");
       navigate("/login");
-    } else {
-      getPlantCategories();
+      return;
     }
-  }, [token, navigate]);
 
-  // Fetch all categories
-  const getPlantCategories = async () => {
+    getCategories();
+  }, [token]);
+
+  const getCategories = async () => {
     try {
-      console.log(
-        "Fetching categories with URL:",
-        `${config.BASE_URL}/api/Allcategory`
-      );
-      console.log("Token:", token);
-      const response = await axios.get(`${config.BASE_URL}/api/Allcategory`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      const res = await axios.get(`${config.BASE_URL}/api/categories/all`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Plant Categories Response:", response.data);
-      // Handle single object or array
-      const categoriesArray = Array.isArray(response.data)
-        ? response.data
-        : response.data.categories && Array.isArray(response.data.categories)
-        ? response.data.categories
-        : response.data &&
-          typeof response.data === "object" &&
-          response.data.categoryId
-        ? [response.data]
-        : [];
-      setCategories(categoriesArray);
+
+      setCategories(res.data || []);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching categories:", {
-        message: error.message,
-        response: error.response
-          ? {
-              status: error.response.status,
-              data: error.response.data,
-              headers: error.response.headers,
-            }
-          : null,
-        request: error.request,
-        config: error.config,
-      });
-      setError("Failed to load categories.");
+      toast.error("Failed to fetch categories.");
       setLoading(false);
     }
   };
 
-  // Add category
-  const handleAddCategory = async (e) => {
-    e.preventDefault();
-    if (!updatedCategoryName.trim()) {
-      toast.error("Category name cannot be empty.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+  // ADD CATEGORY
+  // ADD CATEGORY
+const handleAddCategory = async (e) => {
+  e.preventDefault();
 
-    const formData = { categoryName: updatedCategoryName };
-    try {
-      const response = await axios.post(
-        `${config.BASE_URL}/api/category`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 201) {
-        toast.success("Category added successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setUpdatedCategoryName("");
-        setIsAddModalOpen(false);
-        getPlantCategories();
-      }
-    } catch (error) {
-      console.error("Error adding category:", error.response || error);
-      toast.error(
-        `Failed to add category: ${
-          error.response?.data?.message || error.message
-        }`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
-    }
-  };
+  if (!newCategoryName.trim()) {
+    toast.error("Category name is required!");
+    return;
+  }
 
-  // Edit category
-  const handleEditCategory = async (id) => {
-    if (!updatedCategoryName.trim()) {
-      toast.error("Category name cannot be empty.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
+  try {
+    const body = {
+      name: newCategoryName,
+      categoryType: newCategoryType || "PRODUCT",
+    };
 
-    try {
-      const response = await axios.put(
-        `${config.BASE_URL}/api/updateCategory/${id}`,
-        { categoryName: updatedCategoryName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Category updated successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setEditingCategoryId(null);
-        setUpdatedCategoryName("");
-        getPlantCategories();
-      }
-    } catch (error) {
-      console.error("Error updating category:", error.response || error);
-      toast.error(
-        `Failed to update category: ${
-          error.response?.data?.message || error.message
-        }`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
-    }
-  };
+    await axios.post(`${config.BASE_URL}/api/categories/add`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-  // Open Delete Modal
-  const openDeleteModal = (id) => {
-    setCategoryIdToDelete(id);
-    setIsDeleteModalOpen(true);
-  };
-
-  // Close Delete Modal
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setCategoryIdToDelete(null);
-  };
-
-  // Handle Delete
-  const handleDelete = async () => {
-    if (!categoryIdToDelete) return;
-
-    try {
-      console.log("Deleting category with ID:", categoryIdToDelete);
-      const response = await axios.delete(
-        `${config.BASE_URL}/api/deleteCategory/${categoryIdToDelete}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 200 || response.status === 204) {
-        toast.success("Category deleted successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        getPlantCategories();
-      }
-    } catch (error) {
-      console.error("Delete category error:", error.response || error);
-      toast.error(
-        `Failed to delete category: ${
-          error.response?.data?.message || error.message
-        }`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
-    } finally {
-      closeDeleteModal();
-    }
-  };
-
-  // Open Add Modal
-  const openAddModal = () => {
-    setUpdatedCategoryName("");
-    setIsAddModalOpen(true);
-  };
-
-  // Close Add Modal
-  const closeAddModal = () => {
+    toast.success("Category added successfully!");
     setIsAddModalOpen(false);
-    setUpdatedCategoryName("");
+    setNewCategoryName("");
+    setNewCategoryType("");
+    getCategories();
+  } catch (error) {
+    toast.error(error.response?.data || "Failed to add category.");
+  }
+};
+
+
+  // UPDATE CATEGORY
+  const handleEditCategory = async (id) => {
+    if (!categoryName.trim()) {
+      toast.error("Name cannot be empty!");
+      return;
+    }
+
+    try {
+      await axios.put(
+        `${config.BASE_URL}/api/categories/update/${id}`,
+        {
+          name: categoryName,
+          categoryType: categoryType || "PRODUCT",
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Category updated!");
+      setEditingId(null);
+      setCategoryName("");
+      setCategoryType("");
+      getCategories();
+    } catch (error) {
+      toast.error("Update failed.");
+    }
   };
 
-  if (!token) return null;
-  if (loading) return <p className={styles.loading}>Loading categories...</p>;
-  if (error) return <p className={styles.error}>{error}</p>;
+  // DELETE CATEGORY
+  const handleDeleteCategory = async () => {
+    try {
+      await axios.delete(
+        `${config.BASE_URL}/api/categories/delete/${deleteId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success("Category deleted!");
+      setIsDeleteModalOpen(false);
+      getCategories();
+    } catch {
+      toast.error("Delete failed.");
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className={styles.categoryContainer}>
-      {/* Header */}
       <header className={styles.header}>
-        <h1 className={styles.title}>Manage Plant Categories</h1>
-        <Button onClick={openAddModal} className={styles.addCategoryButton}>
-          Add Plant Category
-        </Button>
+        <h1 className={styles.title}>Manage Categories</h1>
+        <Button onClick={() => setIsAddModalOpen(true)}>Add Category</Button>
       </header>
 
-      {/* Category Table */}
       <div className={styles.tableWrapper}>
-        {categories.length > 0 ? (
+        {categories.length ? (
           <table className={styles.categoryTable}>
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Type</th>
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {categories.map((cat) => (
-                <tr key={cat.categoryId || cat.id}>
-                  <td>{cat.categoryId || cat.id}</td>
+                <tr key={cat.id}>
+                  <td>{cat.id}</td>
+
+                  {/* Name Field */}
                   <td>
-                    {editingCategoryId === (cat.categoryId || cat.id) ? (
+                    {editingId === cat.id ? (
                       <Input
-                        type="text"
-                        value={updatedCategoryName}
-                        onChange={(e) => setUpdatedCategoryName(e.target.value)}
-                        className={styles.editInput}
+                        value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value)}
                       />
                     ) : (
-                      cat.categoryName
+                      cat.name
                     )}
                   </td>
-                  <td className={styles.actions}>
-                    {editingCategoryId === (cat.categoryId || cat.id) ? (
+
+                  {/* Category Type (Dropdown when editing) */}
+                  <td>
+                    {editingId === cat.id ? (
+                      <select
+                        className={styles.selectInput}
+                        value={categoryType}
+                        onChange={(e) => setCategoryType(e.target.value)}
+                      >
+                        {categoryTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      cat.categoryType
+                    )}
+                  </td>
+
+                  <td>
+                    {editingId === cat.id ? (
                       <>
-                        <Button
-                          onClick={() =>
-                            handleEditCategory(cat.categoryId || cat.id)
-                          }
-                          className={styles.saveButton}
-                        >
+                        <Button onClick={() => handleEditCategory(cat.id)}>
                           <MdOutlineSaveAlt />
                         </Button>
-                        <Button
-                          onClick={() => {
-                            setEditingCategoryId(null);
-                            setUpdatedCategoryName("");
-                          }}
-                          className={styles.cancelButton}
-                        >
+                        <Button onClick={() => setEditingId(null)}>
                           <MdOutlineCancel />
                         </Button>
                       </>
                     ) : (
                       <>
                         <Button
-                          className={styles.actionEdit}
                           onClick={() => {
-                            setEditingCategoryId(cat.categoryId || cat.id);
-                            setUpdatedCategoryName(cat.categoryName);
+                            setEditingId(cat.id);
+                            setCategoryName(cat.name);
+                            setCategoryType(cat.categoryType);
                           }}
                         >
                           <RiEditLine />
                         </Button>
+
                         <Button
-                          className={styles.actionDel}
-                          onClick={() =>
-                            openDeleteModal(cat.categoryId || cat.id)
-                          }
+                          onClick={() => {
+                            setDeleteId(cat.id);
+                            setIsDeleteModalOpen(true);
+                          }}
                         >
                           <RiDeleteBin6Line />
                         </Button>
@@ -323,53 +244,54 @@ const PlantCategory = () => {
             </tbody>
           </table>
         ) : (
-          <p className={styles.noCategories}>No categories found.</p>
+          <p>No categories found.</p>
         )}
       </div>
 
-      {/* Modal for Adding Plant Categories */}
+      {/* ADD MODAL */}
       <Modal
-  isOpen={isAddModalOpen}
-  onClose={closeAddModal}
-  title="Add New Plant Category"
-  message=""
->
-  <form onSubmit={handleAddCategory} className={styles.addModalForm}>
-    <Input
-      type="text"
-      value={updatedCategoryName}
-      onChange={(e) => setUpdatedCategoryName(e.target.value)}
-      placeholder="Enter Plant Category Name"
-      className={styles.addModalInput}
-      autoFocus
-    />
-
-    <div className={styles.modalButtonGroup}>
-      <Button type="submit" className={styles.modalAddButton}>
-        Add
-      </Button>
-      <Button
-        type="button"
-        onClick={closeAddModal}
-        className={styles.modalCancelButton}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        title="Add New Category"
       >
-        Cancel
-      </Button>
-    </div>
-  </form>
-</Modal>
+        <form onSubmit={handleAddCategory}>
+          <Input
+            placeholder="Category Name"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+          />
 
+          {/* Category Type Dropdown */}
+          <select
+            className={styles.selectInput}
+            value={newCategoryType}
+            onChange={(e) => setNewCategoryType(e.target.value)}
+          >
+            <option value="">Select Category Type</option>
+            {categoryTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
 
-      {/* Modal for Delete Confirmation */}
+          <div className={styles.modalButtonGroup}>
+            <Button type="submit">Add</Button>
+            <Button onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* DELETE MODAL */}
       <Modal
         isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        onConfirm={handleDelete}
-        title="Confirm Deletion"
-        message="Are you sure you want to delete this plant category? This action cannot be undone."
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteCategory}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this category?"
       />
     </div>
   );
 };
 
-export default PlantCategory;
+export default CategoryPage;

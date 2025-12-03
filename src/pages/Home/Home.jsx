@@ -278,6 +278,482 @@
 
 // ------------------------------------------------------
 
+// import axios from "axios";
+// import React, { useEffect, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import config from "../../config/apiconfig";
+// import Card from "../../components/Card/Card";
+// import Carousel from "../../components/Carousel/Carousel";
+// import { FaGifts, FaTools, FaBox, FaSyncAlt, FaSeedling } from "react-icons/fa";
+// import { GiGardeningShears } from "react-icons/gi";
+
+// import styles from "./Home.module.css";
+// import Button from "../../components/Button/Button";
+// import Testimonials from "../../components/Testimonials/Testimonials";
+// import bestseller from "../../assets/images/img/bestseller.png";
+// import plant from "../../assets/images/img/plant.png";
+// import pots from "../../assets/images/img/pots.png";
+// import whiteceramic from "../../assets/images/img/whiteceramic.png";
+// import pot from "../../assets/images/img/pot.jpg";
+// import indoorPlants from "../../assets/images/img/indoorPlants.jpg";
+// import parentPlant from "../../assets/images/img/parentPlant.jpg";
+// import AOS from "aos";
+// import "aos/dist/aos.css";
+
+// const Home = () => {
+//   // Improved Token Handling
+//   // const rawTokenData = localStorage.getItem("jwtToken");
+//   // let tokenData;
+//   // try {
+//   //   tokenData =
+//   //     rawTokenData && rawTokenData !== "undefined"
+//   //       ? JSON.parse(rawTokenData)
+//   //       : null;
+//   // } catch (error) {
+//   //   console.error("Invalid token data in localStorage:", rawTokenData);
+//   //   tokenData = null;
+//   // }
+
+//   const token = localStorage.getItem("jwtToken");
+//   const navigate = useNavigate();
+//   const [plants, setPlants] = useState([]); // Renamed from 'plant' to 'plants' for clarity
+//   const [banners, setBanners] = useState([]);
+
+//   // AOS Init
+//   useEffect(() => {
+//     AOS.init({
+//       duration: 500,
+//       offset: 100,
+//       easing: "ease-in-out",
+//       delay: 0,
+//       once: true,
+//     });
+//   }, []);
+
+//   // Refresh AOS when data loads
+//   useEffect(() => {
+//     AOS.refresh();
+//   }, [banners, plants]);
+
+//   // Fetch Banners
+//   // useEffect(() => {
+//   //   async function getAllBanners() {
+//   //     try {
+//   //       const response = await axios.get(`${config.BASE_URL}/api/allBanner`, {
+//   //         headers: {
+//   //           "Content-Type": "application/json",
+//   //         },
+//   //       });
+//   //       console.log("Banners API Response:", response.data);
+//   //       if (Array.isArray(response.data) && response.data.length > 0) {
+//   //         const bannerUrls = response.data
+//   //           .map((banner) => {
+//   //             if (!banner.image) {
+//   //               // Use banner.image
+//   //               console.warn("Banner missing image:", banner);
+//   //               return null;
+//   //             }
+//   //             return banner.image; // Return banner.image
+//   //           })
+//   //           .filter(Boolean);
+//   //         setBanners(bannerUrls.length > 0 ? bannerUrls : []);
+//   //       } else {
+//   //         console.warn("No banners found.");
+//   //         setBanners([]);
+//   //       }
+//   //     } catch (error) {
+//   //       console.error(
+//   //         "Error fetching banners:",
+//   //         error.response?.data || error.message
+//   //       );
+//   //       setBanners([]);
+//   //     }
+//   //   }
+
+//   //   getAllBanners();
+//   // }, []);
+
+//   useEffect(() => {
+//   async function getAllBanners() {
+//     try {
+//       const headers = {
+//         "Content-Type": "application/json",
+//       };
+
+//       // add token only when available
+//       const token = localStorage.getItem("jwtToken");
+//       if (token) headers.Authorization = `Bearer ${token}`;
+
+//       const response = await axios.get(`${config.BASE_URL}/api/banners/all`, {
+//         headers,
+//       });
+
+//       if (Array.isArray(response.data) && response.data.length > 0) {
+//         const bannerUrls = response.data
+//           .map((b) => `data:image/jpeg;base64,${b.image}`)
+//           .filter(Boolean);
+//         setBanners(bannerUrls);
+//       } else {
+//         setBanners([]);
+//       }
+//     } catch (error) {
+//       console.error("Banner Fetch Error:", error);
+//       setBanners([]);
+//     }
+//   }
+
+//   getAllBanners();
+// }, []);
+
+
+//   // Fetch Products
+//   useEffect(() => {
+//     async function fetchPlants() {
+//       try {
+//         // Conditionally set headers based on token availability
+//         const headers = token
+//           ? {
+//               Authorization: `Bearer ${token}`,
+//               "Content-Type": "application/json",
+//             }
+//           : { "Content-Type": "application/json" };
+
+//         const response = await axios.get(`${config.BASE_URL}/api/product/all`, {
+//           headers,
+//         });
+//         console.log("API Response:", response.data);
+//         setPlants(response.data);
+//       } catch (error) {
+//         console.error("Error fetching plants:", error);
+//         // Optionally, you can handle error if needed
+//         setPlants([]);
+//       }
+//     }
+//     fetchPlants();
+//   }, [token]);
+
+//   // Display only the first 4 products
+//   const displayedProducts = plants.slice(0, 4);
+
+//   // Gifting Section Data
+//   const gifts = [
+//     {
+//       id: 1,
+//       image: bestseller,
+//       title: "Bestsellers",
+//     },
+//     {
+//       id: 2,
+//       image: plant,
+//       title: "Plants",
+//     },
+//     {
+//       id: 3,
+//       image: pots,
+//       title: "Pots",
+//     },
+//     {
+//       id: 4,
+//       image: whiteceramic,
+//       title: "Ceramic Pots",
+//     },
+//   ];
+
+//   const categories = [
+//     {
+//       id: 1,
+//       title: "Plants Collections",
+//       image: indoorPlants,
+//       link: "/plants",
+//       description:
+//         "A curated range of beautiful, low-maintenance plants—perfect for homes, offices, and gifting.",
+//     },
+//     {
+//       id: 2,
+//       title: "Pots & Planters Collections",
+//       image: pot,
+//       link: "/pots-planters",
+//       description:
+//         "Stylish ceramic, terracotta, and designer pots to complement every plant and space.",
+//     },
+//   ];
+
+//   return (
+//     <>
+//       <section className={styles.homeContainer}>
+//         {/* Carousel */}
+//         <div
+//           className={styles.carouselWrapper}
+//           data-aos="fade-up"
+//           data-aos-duration="2000"
+//         >
+//           {banners.length > 0 ? (
+//             // <Carousel images={banners} />
+//           <Carousel banners={banners} />
+            
+//           ) : (
+//             <div className={styles.noBanners}>
+//               <p>No banners available at the moment.</p>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* Products Features Section */}
+//         <div className={styles.productFeatures}>
+//           <div className={styles.giftingContainer}>
+//             <div className={styles.giftList} data-aos="fade-up">
+//               {gifts.map((gift, index) => (
+//                 <div
+//                   key={gift.id}
+//                   className={styles.giftCard}
+//                   data-aos="zoom-in"
+//                   data-aos-delay={index * 50}
+//                 >
+//                   <img
+//                     src={gift.image}
+//                     alt={gift.title}
+//                     className={styles.giftImage}
+//                   />
+//                   <p className={styles.giftTitle}>{gift.title}</p>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className={styles.miniHeading}>
+//           <h2 className={styles.heading} data-aos="zoom-in-up">
+//             Welcome to Green Gifts Nagpur
+//           </h2>
+
+//           <i className={styles.headPara}>
+//             {" "}
+//             Your one-stop destination for all things green and beautiful! As a
+//             premier plant boutique and nursery, we're passionate about helping
+//             you connect with nature and share that love with others.
+//           </i>
+//         </div>
+
+//         {/* Our Best Picks */}
+//         <section className={styles.bestSellers}>
+//           <h2 className={styles.heading} data-aos="zoom-in-up">
+//             Our Best Picks
+//           </h2>
+//           <div className={styles.bestSellersGrid} data-aos="fade-up">
+//             {categories.map((category, index) => (
+//               <Link
+//                 to={category.link}
+//                 key={category.id}
+//                 className={styles.bestSellerCard}
+//                 data-aos="zoom-in"
+//                 data-aos-delay={index * 100}
+//               >
+//                 <img
+//                   src={category.image}
+//                    alt={category.title}
+//                   className={styles.bestSellerImage}
+//                 />
+//                 <div className={styles.bestSellerContent}>
+//                   <h3 className={styles.bestSellerTitle}>{category.title}</h3>
+//                   <p className={styles.bestSellerDescription}>
+//                     {category.description}
+//                   </p>
+//                   {/* <Link to={category.link} className={styles.viewAllButton}>
+//                     View All
+//                   </Link> */}
+//                 </div>
+//               </Link>
+//             ))}
+//           </div>
+//         </section>
+
+//         {/* Product Grid */}
+//         <div className={styles.bestSellers}>
+//           <h2 data-aos="zoom-in-up">Best Sellers</h2>
+//           <div className={styles.productGrid}>
+//             {displayedProducts.length > 0 ? (
+//               displayedProducts.map((plant) => {
+//                 const firstVariant = plant.variants?.[0] || {}; // Use first variant for display
+//                 return (
+//                   // <div className={styles.cardComp} >
+//                   // <Card
+//                   //   key={plant.id}
+//                   //   id={plant.id} // Pass parent product ID
+//                   //   image={
+//                   //     firstVariant.imageUrls?.[0] ||
+//                   //     "https://via.placeholder.com/150"
+//                   //   }
+//                   //   title={plant.name || "No Title"}
+//                   //   category={plant.category}
+//                   //   price={firstVariant.price || "N/A"}
+//                   //   discount={firstVariant.discountedPrice || null}
+//                   //   product={plant} // ✅ Pass full product object
+//                   //   selectedVariant={firstVariant} // ✅ Pass selected variant
+//                   // />
+
+//                   <Card
+//   key={plant.id}
+//   id={plant.id}
+//   image={
+//   plant.variants?.[0]?.imageUrls?.[0]
+//     ? `data:image/jpeg;base64,${plant.variants[0].imageUrls[0]}`
+//     : plant.terrariumImg
+//     ? `data:image/jpeg;base64,${plant.terrariumImg}`
+//     : "https://via.placeholder.com/150"
+// }
+//   title={plant.name || "No Title"}
+//   category={plant.category}
+//   price={
+//     plant.variants?.[0]?.price ??
+//     plant.terrariumPrice ??
+//     "N/A"
+//   }
+//   discount={
+//     plant.variants?.[0]?.discountedPrice ??
+//     (plant.terrariumPrice ? plant.terrariumPrice : null)
+//   }
+//   product={plant}
+//   selectedVariant={plant.variants?.[0]}
+// />
+
+//                   //  </div>
+//                 );
+//               })
+//             ) : (
+//               <p>No products available at the moment.</p>
+//             )}
+//           </div>
+
+//           {/* View All Button */}
+//           <div className={styles.viewAllContainer} data-aos="fade-up">
+//             <Link className={styles.viewAllButton} to="/plants">
+//               View All
+//             </Link>
+//           </div>
+//         </div>
+
+//         {/* WhyGreenGifts section */}
+//         <div className={styles.whySection} data-aos="fade-up">
+//           <h2 className={styles.heading} data-aos="zoom-in-up">
+//             Why Green Gifts?
+//           </h2>
+//           <div className={styles.features}>
+//             <div className={styles.feature}>
+//               <FaGifts className={styles.icon} />
+//               <p>Green Gifting Solutions</p>
+//             </div>
+//             <div className={styles.feature}>
+//               <FaTools className={styles.icon} />
+//               <p>Garden Accessories</p>
+//             </div>
+//             <div className={styles.feature}>
+//               <FaSeedling className={styles.icon} />
+//               <p>Plant Care</p>
+//             </div>
+//             <div className={styles.feature}>
+//               <FaSyncAlt className={styles.icon} />
+//               <p>Gardening Services</p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Testimonials */}
+//         <Testimonials />
+
+//         {/* Plant Parent Rewards Club Section */}
+//         <section className={styles.rewardsClub} data-aos="fade-up">
+//           <div className={styles.rewardsClubContainer}>
+//             <div className={styles.rewardsClubText}>
+//               <h2 data-aos="zoom-in-up">Featured Pots & Planters</h2>
+//               <p>
+//                 Every plant purchase is a gift that keeps on giving. Earn coins
+//                 and redeem them for exclusive discounts.
+//               </p>
+//               <div className={styles.rewardsClubButtons}>
+//                 <Link to="/pots-planters" className={styles.rewardsButton}>
+//                   View More
+//                 </Link>
+//                 <Link to="/contact-us" className={styles.rewardsButton}>
+//                   Contact Us
+//                 </Link>
+//               </div>
+//             </div>
+//             <div className={styles.rewardsClubImage} data-aos="zoom-in">
+//               <img src={parentPlant} alt="Plant Parent Rewards Club" />
+//             </div>
+//           </div>
+//         </section>
+
+//         {/* About Green Gifts */}
+//         <div className={styles.about} data-aos="fade-up">
+//           <h4 className={styles.heading} data-aos="zoom-in-up">
+//             About Green Gifts
+//           </h4>
+//           <p>
+//             Welcome to Green Gifts Nagpur, your one-stop destination for all
+//             things green and beautiful! As a premier plant boutique and nursery,
+//             we're passionate about helping you connect with nature and share
+//             that love with others. Explore our curated collection of exquisite
+//             plants, carefully selected to bring joy, serenity, and freshness to
+//             any space. From elegant green gifts to customized plant
+//             arrangements, we'll help you find the perfect way to express
+//             yourself. At Green Gifts Nagpur, we're dedicated to providing
+//             exceptional garden services, expert advice, and personalized support
+//             to help you create your own oasis. Whether you're looking for a
+//             thoughtful gift, a stunning addition to your home or office, or
+//             simply a way to nurture your love for plants, we're here to help.
+//             Browse through our website to discover the beauty of nature, and let
+//             us help you grow your love for plants!"
+//           </p>
+//         </div>
+//       </section>
+//     </>
+//   );
+// };
+
+// export default Home;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -302,19 +778,19 @@ import "aos/dist/aos.css";
 
 const Home = () => {
   // Improved Token Handling
-  const rawTokenData = localStorage.getItem("ecommerce_login");
-  let tokenData;
-  try {
-    tokenData =
-      rawTokenData && rawTokenData !== "undefined"
-        ? JSON.parse(rawTokenData)
-        : null;
-  } catch (error) {
-    console.error("Invalid token data in localStorage:", rawTokenData);
-    tokenData = null;
-  }
+  // const rawTokenData = localStorage.getItem("jwtToken");
+  // let tokenData;
+  // try {
+  //   tokenData =
+  //     rawTokenData && rawTokenData !== "undefined"
+  //       ? JSON.parse(rawTokenData)
+  //       : null;
+  // } catch (error) {
+  //   console.error("Invalid token data in localStorage:", rawTokenData);
+  //   tokenData = null;
+  // }
 
-  const token = tokenData?.jwtToken || "";
+  const token = localStorage.getItem("jwtToken");
   const navigate = useNavigate();
   const [plants, setPlants] = useState([]); // Renamed from 'plant' to 'plants' for clarity
   const [banners, setBanners] = useState([]);
@@ -374,32 +850,36 @@ const Home = () => {
   // }, []);
 
   useEffect(() => {
-  async function getAllBanners() {
-    try {
-      const response = await axios.get(`${config.BASE_URL}/api/allBanner`, {
-        headers: {
+    async function getAllBanners() {
+      try {
+        const headers = {
           "Content-Type": "application/json",
-        },
-      });
+        };
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        const bannerUrls = response.data
-          .map((banner) => banner.image)
-          .filter(Boolean); // Ensure no null values
-        console.log("Fetched banners:", bannerUrls); // Debug here
-        setBanners(bannerUrls);
-      } else {
-        console.warn("No banners found.");
+        // add token only when available
+        const token = localStorage.getItem("jwtToken");
+        if (token) headers.Authorization = `Bearer ${token}`;
+
+        const response = await axios.get(`${config.BASE_URL}/api/banners/all`, {
+          headers,
+        });
+
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const bannerUrls = response.data
+            .map((b) => `data:image/jpeg;base64,${b.image}`)
+            .filter(Boolean);
+          setBanners(bannerUrls);
+        } else {
+          setBanners([]);
+        }
+      } catch (error) {
+        console.error("Banner Fetch Error:", error);
         setBanners([]);
       }
-    } catch (error) {
-      console.error("Error fetching banners:", error);
-      setBanners([]);
     }
-  }
-  getAllBanners();
-}, []);
 
+    getAllBanners();
+  }, []);
 
   // Fetch Products
   useEffect(() => {
@@ -413,7 +893,7 @@ const Home = () => {
             }
           : { "Content-Type": "application/json" };
 
-        const response = await axios.get(`${config.BASE_URL}/api/AllProduct`, {
+        const response = await axios.get(`${config.BASE_URL}/api/product/all`, {
           headers,
         });
         console.log("API Response:", response.data);
@@ -426,6 +906,22 @@ const Home = () => {
     }
     fetchPlants();
   }, [token]);
+
+  
+const getImageSrc = (img) => {
+  if (!img) {
+    return "https://via.placeholder.com/150?text=No+Image";
+  }
+
+  let clean = img.trim();
+  clean = clean.replace(/(\r\n|\n|\r)/gm, "").replace(/\s/g, "");
+
+  if (clean.startsWith("data:image")) return clean;
+  if (clean.startsWith("http")) return clean;
+
+  return `data:image/jpeg;base64,${clean}`;
+};
+
 
   // Display only the first 4 products
   const displayedProducts = plants.slice(0, 4);
@@ -484,8 +980,7 @@ const Home = () => {
         >
           {banners.length > 0 ? (
             // <Carousel images={banners} />
-          <Carousel banners={banners} />
-            
+            <Carousel banners={banners} />
           ) : (
             <div className={styles.noBanners}>
               <p>No banners available at the moment.</p>
@@ -545,7 +1040,7 @@ const Home = () => {
               >
                 <img
                   src={category.image}
-                  alt={category.title}
+                   alt={category.title}
                   className={styles.bestSellerImage}
                 />
                 <div className={styles.bestSellerContent}>
@@ -563,67 +1058,47 @@ const Home = () => {
         </section>
 
         {/* Product Grid */}
-        <div className={styles.bestSellers}>
+        {/* <div className={styles.bestSellers}>
           <h2 data-aos="zoom-in-up">Best Sellers</h2>
           <div className={styles.productGrid}>
             {displayedProducts.length > 0 ? (
               displayedProducts.map((plant) => {
-                const firstVariant = plant.variants?.[0] || {}; // Use first variant for display
+                const firstVariant = plant.variants?.[0] || {};
+               const rawImageData =firstVariant?.imageUrls?.[0] ||firstVariant?.image || plant?.terrariumImg || plant?.image ||null;
+const imageSrc = getImageSrc(rawImageData);
+
+                console.log(`Product "${plant.name}" raw data preview:`, rawImageData ? rawImageData.substring(0, 30) + "..." : "empty", "| Final src preview:", imageSrc.substring(0, 50) + "..."); // Debug
+
                 return (
                   // <div className={styles.cardComp} >
-                  // <Card
-                  //   key={plant.id}
-                  //   id={plant.id} // Pass parent product ID
-                  //   image={
-                  //     firstVariant.imageUrls?.[0] ||
-                  //     "https://via.placeholder.com/150"
-                  //   }
-                  //   title={plant.name || "No Title"}
-                  //   category={plant.category}
-                  //   price={firstVariant.price || "N/A"}
-                  //   discount={firstVariant.discountedPrice || null}
-                  //   product={plant} // ✅ Pass full product object
-                  //   selectedVariant={firstVariant} // ✅ Pass selected variant
-                  // />
-
                   <Card
-  key={plant.id}
-  id={plant.id}
-  image={
-    plant.variants?.[0]?.imageUrls?.[0] ||
-    plant.terrariumImg ||
-    "https://via.placeholder.com/150"
-  }
-  title={plant.name || "No Title"}
-  category={plant.category}
-  price={
-    plant.variants?.[0]?.price ??
-    plant.terrariumPrice ??
-    "N/A"
-  }
-  discount={
-    plant.variants?.[0]?.discountedPrice ??
-    (plant.terrariumPrice ? plant.terrariumPrice : null)
-  }
-  product={plant}
-  selectedVariant={plant.variants?.[0]}
-/>
+                    key={plant.id}
+                    id={plant.id}
+                    image={imageSrc}
+                    title={plant.name || "No Title"}
+                    category={plant.category}
+                    price={firstVariant.price ?? plant.terrariumPrice ?? "N/A"}
+                    discount={firstVariant.discountedPrice ?? (plant.terrariumPrice ? plant.terrariumPrice : null)}
+                    product={plant}
+                    selectedVariant={firstVariant}
+                  />
 
                   //  </div>
-                );
+                );   
               })
             ) : (
               <p>No products available at the moment.</p>
             )}
-          </div>
+          </div> */}
 
           {/* View All Button */}
-          <div className={styles.viewAllContainer} data-aos="fade-up">
+          {/* <div className={styles.viewAllContainer} data-aos="fade-up">
             <Link className={styles.viewAllButton} to="/plants">
               View All
             </Link>
           </div>
-        </div>
+        </div> */}
+        <Card/>
 
         {/* WhyGreenGifts section */}
         <div className={styles.whySection} data-aos="fade-up">

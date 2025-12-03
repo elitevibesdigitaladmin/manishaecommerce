@@ -1,143 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./Login.module.css";
+import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
-import Button from "../../../components/Button/Button";
-import { Input } from "../../../components/Input/Input";
 import axios from "axios";
 import config from "../../../config/apiconfig";
-import { toast } from "react-toastify";
+import Button from "../../../components/Button/Button";
+import { Input } from "../../../components/Input/Input";
 import { LuEyeOff, LuEye } from "react-icons/lu";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import styles from "./Login.module.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // FORM VALIDATION
   const validate = () => {
     const newErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (!formData.email) newErrors.email = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Invalid email format.";
-    }
 
-    if (!formData.password) {
-      newErrors.password = "Password is required.";
-    } else if (formData.password.length < 6) {
+    if (!formData.password) newErrors.password = "Password is required.";
+    else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // HANDLE INPUT
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // TOGGLE PASSWORD
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    try {
+      const response = await axios.post(
+        `${config.BASE_URL}/api/auth/login`,
+        formData,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.status === 200) {
+        const { jwtToken, admin, user } = response.data;
+
+        // Determine role
+        let role =
+          admin?.role?.[0]?.roleName || user?.role?.[0]?.roleName || "User";
+
+        // Save token & role in AuthContext and localStorage
+        login(jwtToken, role);
+
+        toast.success(`${role} Login Successfully`);
+        navigate(role === "Admin" ? "/admin" : "/");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    }
   };
 
-  // HANDLE LOGIN
- // HANDLE LOGIN
-// HANDLE LOGIN
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validate()) return;
-
-  try {
-    const response = await axios.post(
-      `${config.BASE_URL}/api/auth/login`,
-      formData,
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-    if (response.status === 200) {
-      const { admin, user, jwtToken } = response.data;
-
-      let role = null;
-
-      if (admin) {
-        role = admin.role?.[0]?.roleName || "Admin";
-      } else if (user) {
-        role = user.role?.[0]?.roleName || "User";
-      }
-
-      // Save to AuthContext
-      login(jwtToken, role);
-
-      toast.success(`${role} Login Successfully`);
-
-      if (role === "Admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    }
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Login failed");
-  }
-};
-
-
-
-
-  // AOS INITIALIZATION
-  useEffect(() => {
-    AOS.init({
-      duration: 500,
-      offset: 100,
-      easing: "ease-in-out",
-      once: true,
-    });
-  }, []);
-
   return (
-    <div
-      className={styles.loginContainer}
-      data-aos="fade-up"
-      data-aos-duration="1000"
-    >
+    <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
-        <h2 data-aos="zoom-in">Login</h2>
+        <h2>Login</h2>
         <p>
-          Don't have an account yet? <a href="/register">Create account</a>
+          Don't have an account? <a href="/register">Create account</a>
         </p>
 
-        <form onSubmit={handleSubmit} data-aos="zoom-in-up">
-          
-          {/* Email */}
+        <form onSubmit={handleSubmit}>
           <Input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            className={`${styles.inputField} ${
-              errors.email ? styles.errorBorder : ""
-            }`}
+            className={errors.email ? styles.errorBorder : ""}
           />
           {errors.email && <p className={styles.errorText}>{errors.email}</p>}
 
-          {/* Password */}
           <div className={styles.passwordWrapper}>
             <Input
               type={showPassword ? "text" : "password"}
@@ -145,42 +94,29 @@ const handleSubmit = async (e) => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className={`${styles.inputField} ${
-                errors.password ? styles.errorBorder : ""
-              }`}
+              className={errors.password ? styles.errorBorder : ""}
             />
-
-            <span
-              className={styles.passwordToggle}
-              onClick={togglePasswordVisibility}
-              role="button"
-            >
+            <span onClick={togglePasswordVisibility} role="button">
               {showPassword ? <LuEye size={15} /> : <LuEyeOff size={15} />}
             </span>
           </div>
-
-          {errors.password && (
-            <p className={styles.errorText}>{errors.password}</p>
-          )}
+          {errors.password && <p className={styles.errorText}>{errors.password}</p>}
 
           <a href="/forgot-password" className={styles.forgotPassword}>
             Forgot your password?
           </a>
 
-          <Button type="submit" className={styles.signInBtn} data-aos="zoom-in">
+          <Button type="submit" className={styles.signInBtn}>
             SIGN IN
           </Button>
         </form>
-
-        <a href="/" className={styles.returnToStore}>
-          Return to Store
-        </a>
       </div>
     </div>
   );
 };
 
 export default Login;
+
 
 
 
