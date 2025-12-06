@@ -209,19 +209,19 @@ import WhatsAppBtn from "./components/WhatsAppBtn/WhatsAppBtn";
 
 // Admin Panel
 import AdminLayout from "./layouts/AdminLayout";
-import AdminDashboard from "./admin/pages/Dashboard/AdminDashboard";
-import PlantCategory from "./admin/pages/Category/PlantCategory";
-import PotCategory from "./admin/pages/Category/PotCategory";
-import AddProduct from "./admin/pages/Product/AddProduct";
-import ProductList from "./admin/pages/Product/ProductList";
-import OfferBanner from "./admin/pages/Banner/OfferBanner";
-import Order from "./admin/pages/Orders/Orders";
-import AddWorkshop from "./admin/pages/AddWorkshop/AddWorkshop";
-import Users from "./admin/pages/Users/Users";
+import AdminDashboard from "./Admin/pages/Dashboard/AdminDashboard";
+import PlantCategory from "./Admin/pages/Category/PlantCategory";
+import PotCategory from "./Admin/pages/Category/PotCategory";
+import AddProduct from "./Admin/pages/Product/AddProduct";
+import ProductList from "./Admin/pages/Product/ProductList";
+import OfferBanner from "./Admin/pages/Banner/OfferBanner";
+import Order from "./Admin/pages/Orders/Orders";
+import AddWorkshop from "./Admin/pages/AddWorkshop/AddWorkshop";
+import Users from "./Admin/pages/Users/Users";
 import { Navigate } from "react-router-dom";
 // Protected Route
 import ProtectedRoute from "./utils/ProtectedRoute";
-import CategoryPage from "./admin/pages/Category/PlantCategory";
+import CategoryPage from "./Admin/pages/Category/PlantCategory";
 
 const App = () => {
   return (
