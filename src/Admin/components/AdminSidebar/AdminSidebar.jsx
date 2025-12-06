@@ -122,7 +122,7 @@ const AdminSidebar = () => {
                       Plant Category
                     </Link>
                   </li>
-                  <li
+                  {/* <li
                     className={`${styles.dropdownItem} ${
                       location.pathname === '/admin/pot-category' ? styles.active : ''
                     }`}
@@ -135,7 +135,7 @@ const AdminSidebar = () => {
                       <GiPorcelainVase size={20} className={styles.icon} />
                       Pot Category
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               )}
             </li>
@@ -219,7 +219,7 @@ const AdminSidebar = () => {
 
             <li
               className={`${styles.navItem} ${
-                location.pathname === '/admin/add-workshop' ? styles.active : ''
+                location.pathname === '/admin/users' ? styles.active : ''
               }`}
             >
               <Link to="/admin/users" className={styles.navLink} onClick={handleLinkClick}>
@@ -231,7 +231,7 @@ const AdminSidebar = () => {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className={styles.sidebarFooter}>
+        {/* <div className={styles.sidebarFooter}>
           <Link
             to="/admin/settings"
             className={`${styles.navLink} ${
@@ -242,7 +242,7 @@ const AdminSidebar = () => {
             <FiSettings size={20} className={styles.icon} />
             Settings
           </Link>
-        </div>
+        </div> */}
       </div>
     </>
   );

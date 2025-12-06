@@ -188,7 +188,6 @@
 
 // export default OrderConfirm;
 
-
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -219,16 +218,21 @@ const OrderConfirm = () => {
         let orderIdFromState = location.state?.orderId;
 
         if (orderIdFromState) {
-          // If we have the newly placed order ID from navigation, fetch it directly
-          const res = await axios.get(`${config.BASE_URL}/api/order/${orderIdFromState}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await axios.get(
+            `${config.BASE_URL}/api/order/${orderIdFromState}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setOrder(res.data);
+          console.log("Order fetched by ID from state:", res.data);
         } else {
-          // Otherwise, fetch all my-orders and pick the latest
-          const res = await axios.get(`${config.BASE_URL}/api/order/my-orders`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await axios.get(
+            `${config.BASE_URL}/api/order/my-orders`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           const orders = res.data || [];
           if (orders.length === 0) {
             toast.info("No orders found");
@@ -253,22 +257,55 @@ const OrderConfirm = () => {
   if (loadingOrder) return <p className={styles.loading}>Loading order...</p>;
   if (!order) return null;
 
-  const { shippingAddress = {}, paymentMethod, orderItems = [], totalAmount, status, createdAt, orderId } = order;
-  const {
-    fullName = "N/A",
-    street = "N/A",
-    city = "N/A",
-    state: st = "N/A",
-    zipCode = "N/A",
-    country = "India",
-    phoneNumber = "N/A",
-  } = shippingAddress;
+  const { paymentMethod, orderItems = [], totalAmount, status, createdAt, orderId } = order;
+
+  // ---------------------------
+  // FIXED SHIPPING DATA MAP
+  // ---------------------------
+  const shippingAddress = order?.shippingAddress || {};
+
+  const fullName =
+    shippingAddress.fullName ||
+    shippingAddress.full_name ||
+    shippingAddress.name ||
+    "N/A";
+
+  const phoneNumber =
+    shippingAddress.phoneNumber ||
+    shippingAddress.phone ||
+    shippingAddress.mobile ||
+    "N/A";
+
+  const street =
+    shippingAddress.street ||
+    shippingAddress.address ||
+    shippingAddress.addressLine1 ||
+    "N/A";
+
+  const city = shippingAddress.city || "N/A";
+
+  const st =
+    shippingAddress.state ||
+    shippingAddress.stateName ||
+    shippingAddress.region ||
+    "N/A";
+
+  const zipCode =
+    shippingAddress.zipCode ||
+    shippingAddress.pincode ||
+    shippingAddress.postalCode ||
+    "N/A";
+
+  const country = shippingAddress.country || "India";
+
+  // ---------------------------
 
   const handleContinue = () => navigate("/");
 
   return (
     <div className={styles.orderConfirmationPage}>
       <h1 className={styles.pageTitle}>Order Confirmation</h1>
+
       <div className={styles.confirmationContainer}>
         <div className={styles.successMessage}>
           <h2>Thank You for Your Order!</h2>
@@ -282,7 +319,7 @@ const OrderConfirm = () => {
           <p><strong>Placed On:</strong> {new Date(createdAt).toLocaleString()}</p>
           <p><strong>Total Amount:</strong> ₹{totalAmount}</p>
 
-          <h3>Shipping Details</h3>
+          {/* <h3>Shipping Details</h3>
           <p><strong>Full Name:</strong> {fullName}</p>
           <p><strong>Address:</strong> {`${street}, ${city}, ${st}, ${zipCode}, ${country}`}</p>
           <p><strong>Phone:</strong> {phoneNumber}</p>
@@ -298,7 +335,7 @@ const OrderConfirm = () => {
               <p><strong>Price:</strong> ₹{item.price}</p>
               <p><strong>Discounted Price:</strong> ₹{item.discountedPrice}</p>
             </div>
-          ))}
+          ))} */}
         </div>
 
         <div className={styles.actions}>

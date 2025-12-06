@@ -1,5 +1,138 @@
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import { useAuth } from "../../../context/AuthContext";
+// import axios from "axios";
+// import config from "../../../config/apiconfig";
+// import Button from "../../../components/Button/Button";
+// import { Input } from "../../../components/Input/Input";
+// import { LuEyeOff, LuEye } from "react-icons/lu";
+// import styles from "./Login.module.css";
+
+// const Login = () => {
+//   const navigate = useNavigate();
+//   const { login } = useAuth();
+
+//   const [formData, setFormData] = useState({ email: "", password: "" });
+//   const [errors, setErrors] = useState({});
+//   const [showPassword, setShowPassword] = useState(false);
+
+//   const validate = () => {
+//     const newErrors = {};
+//     if (!formData.email) newErrors.email = "Email is required.";
+//     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+//       newErrors.email = "Invalid email format.";
+
+//     if (!formData.password) newErrors.password = "Password is required.";
+//     else if (formData.password.length < 6)
+//       newErrors.password = "Password must be at least 6 characters.";
+
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0;
+//   };
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({ ...prev, [name]: value }));
+//     setErrors((prev) => ({ ...prev, [name]: "" }));
+//   };
+
+//   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!validate()) return;
+
+//     try {
+//       const response = await axios.post(
+//         `${config.BASE_URL}/api/auth/login`,
+//         formData,
+//         { headers: { "Content-Type": "application/json" } }
+//       );
+
+//       if (response.status === 200) {
+//         const { jwtToken, admin, user } = response.data;
+
+//         // Determine role
+//         let role =
+//           admin?.role?.[0]?.roleName || user?.role?.[0]?.roleName || "User";
+
+//         // Save token & role in AuthContext and localStorage
+//         login(jwtToken, role);
+
+//         toast.success(`${role} Login Successfully`);
+//         navigate(role === "Admin" ? "/admin" : "/");
+//       }
+//     } catch (error) {
+//       toast.error(error.response?.data?.message || "Login failed");
+//     }
+//   };
+
+//   return (
+//     <div className={styles.loginContainer}>
+//       <div className={styles.loginBox}>
+//         <h2>Login</h2>
+//         <p>
+//           Don't have an account? <a href="/register">Create account</a>
+//         </p>
+
+//         <form onSubmit={handleSubmit}>
+//           <Input
+//             type="email"
+//             name="email"
+//             value={formData.email}
+//             onChange={handleChange}
+//             placeholder="Email"
+//             className={errors.email ? styles.errorBorder : ""}
+//           />
+//           {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+
+//           <div className={styles.passwordWrapper}>
+//             <Input
+//               type={showPassword ? "text" : "password"}
+//               name="password"
+//               value={formData.password}
+//               onChange={handleChange}
+//               placeholder="Password"
+//               className={errors.password ? styles.errorBorder : ""}
+//             />
+//             <span onClick={togglePasswordVisibility} role="button">
+//               {showPassword ? <LuEye size={15} /> : <LuEyeOff size={15} />}
+//             </span>
+//           </div>
+//           {errors.password && <p className={styles.errorText}>{errors.password}</p>}
+
+//           <a href="/forgot-password" className={styles.forgotPassword}>
+//             Forgot your password?
+//           </a>
+
+//           <Button type="submit" className={styles.signInBtn}>
+//             SIGN IN
+//           </Button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
@@ -11,6 +144,7 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -22,11 +156,9 @@ const Login = () => {
     if (!formData.email) newErrors.email = "Email is required.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Invalid email format.";
-
     if (!formData.password) newErrors.password = "Password is required.";
     else if (formData.password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -53,15 +185,17 @@ const Login = () => {
       if (response.status === 200) {
         const { jwtToken, admin, user } = response.data;
 
-        // Determine role
         let role =
           admin?.role?.[0]?.roleName || user?.role?.[0]?.roleName || "User";
 
-        // Save token & role in AuthContext and localStorage
+        // Save token & role
         login(jwtToken, role);
 
         toast.success(`${role} Login Successfully`);
-        navigate(role === "Admin" ? "/admin" : "/");
+
+        // Redirect to intended page or default
+        const redirectTo = location.state?.redirectTo || (role === "Admin" ? "/admin" : "/");
+        navigate(redirectTo, { replace: true });
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
@@ -116,6 +250,73 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

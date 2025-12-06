@@ -129,7 +129,7 @@ const OfferBanner = () => {
     } catch (error) {
       console.log("Banner error:", error);
       toast.error(
-        error.response?.data?.message || "Banner operation failed!"
+        error.response?.data?.message || "same category banner already exists."
       );
     }
   };

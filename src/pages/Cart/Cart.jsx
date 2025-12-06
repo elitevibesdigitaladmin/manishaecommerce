@@ -978,7 +978,7 @@ const Cart = () => {
     navigate("/checkout");
   };
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = cart.reduce((acc, item) => acc + item.discountedPrice * item.quantity, 0);
 
   if (loadingCart) return <p>Loading cart...</p>;
 
@@ -1013,7 +1013,7 @@ const Cart = () => {
                   />
                   <span>{item.productName}</span>
                 </td>
-                <td>₹{item.price}</td>
+                <td>₹{item.discountedPrice}</td>
                 <td>
                   <button onClick={() => updateQuantity(item.variantId, -1)}>-</button>
                   <span>{item.quantity}</span>

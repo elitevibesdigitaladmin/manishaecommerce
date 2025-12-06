@@ -13,11 +13,16 @@ import "aos/dist/aos.css";
 const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null); // Desktop dropdown
+  const [mobileDropdowns, setMobileDropdowns] = useState({
+    plants: false,
+    account: false,
+  });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [plantSubCategories, setPlantSubCategories] = useState([]);
-  const [potSubCategories, setPotSubCategories] = useState([]);
   const [cartCount, setCartCount] = useState(0);
 
   const isLoggedIn = !!user?.token;
@@ -27,58 +32,70 @@ const Navbar = ({ onSearch }) => {
     navigate("/login");
   };
 
-  const handleInputChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    onSearch(query);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const toggleDropdown = (menu) => setOpenDropdown(openDropdown === menu ? null : menu);
+  const toggleMobileDropdown = (menu) => {
+    setMobileDropdowns((prev) => ({
+      ...prev,
+      [menu]: !prev[menu],
+    }));
+  };
 
-  // fetch categories
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    onSearch(val);
+  };
+
+  // Fetch Subcategories
   useEffect(() => {
-    const fetchSubCategories = async () => {
+    const fetchCategories = async () => {
       try {
-        const plantRes = await axios.get(`${config.BASE_URL}/api/Allcategory`);
+        const plantRes = await axios.get(`${config.BASE_URL}/api/categories/all`);
         setPlantSubCategories(plantRes.data);
-
-        const potRes = await axios.get(`${config.BASE_URL}/api/pot-categories`);
-        setPotSubCategories(potRes.data);
-      } catch (error) {
-        console.error("Failed to fetch subcategories:", error);
+      } catch (err) {
+        console.error("Category fetch failed:", err);
       }
     };
-    fetchSubCategories();
+
+    fetchCategories();
   }, []);
 
-  // fetch cart count dynamically
+  // Cart Count Fetch
   useEffect(() => {
     const fetchCartCount = async () => {
       if (!user?.token) {
         setCartCount(0);
         return;
       }
+
       try {
         const res = await axios.get(`${config.BASE_URL}/api/cart/view`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        const count = res.data.cartItems?.reduce((acc, item) => acc + item.quantity, 0) || 0;
-        setCartCount(count);
-      } catch (err) {
-        console.error("Failed to fetch cart count:", err);
-        setCartCount(0);
+
+        const total = res?.data?.cartItems?.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+        setCartCount(total || 0);
+      } catch (error) {
+        console.error("Cart count fetch failed:", error);
       }
     };
+
     fetchCartCount();
   }, [user]);
 
   useEffect(() => {
-    AOS.init({ duration: 500, offset: 100, easing: "ease-in-out", delay: 0, once: true });
+    AOS.init({ duration: 500, once: true });
   }, []);
 
   return (
     <>
+      {/* Top Navbar */}
       <section className={styles.topNavbar}>
         <div className={styles.title}>
           <span>
@@ -86,51 +103,69 @@ const Navbar = ({ onSearch }) => {
           </span>
           <span>Free Shipping on Orders Over 500</span>
           <span>
-            Customer Support: <a href="tel:+917028917456">+917028917456</a>
+            Customer Support:{" "}
+            <a href="tel:+917028917456">+917028917456</a>
           </span>
         </div>
       </section>
 
+      {/* Main Navbar */}
       <header className={styles.navbar}>
         <div className={styles.logo}>
-          <Link to="/"><img src={logo} alt="Green Gifts Logo" /></Link>
+          <Link to="/">
+            <img src={logo} alt="Green Gifts Logo" />
+          </Link>
         </div>
 
-        <nav className={`${styles.navLinks} ${isMobileMenuOpen ? styles.active : ""}`}>
-          <nav className={styles.navItem}><Link to="/">Home</Link></nav>
+        {/* Desktop Navigation */}
+        <div
+          className={`${styles.navLinks} ${
+            isMobileMenuOpen ? styles.active : ""
+          }`}
+        >
+          <div className={styles.navItem}>
+            <Link to="/">Home</Link>
+          </div>
 
-          {/* Plants Dropdown */}
-          <nav className={styles.navItem} onMouseEnter={() => setOpenDropdown("plants")} onMouseLeave={() => setOpenDropdown(null)}>
-            <Link to="/plants">Plants</Link>
+          {/* Plants Dropdown (Desktop) */}
+          <div
+            className={styles.navItem}
+            onMouseEnter={() => !isMobileMenuOpen && setOpenDropdown("plants")}
+            onMouseLeave={() => !isMobileMenuOpen && setOpenDropdown(null)}
+          >
+            <span className={styles.navLink}>Plants</span>
+
             {openDropdown === "plants" && (
-              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
-                {plantSubCategories.map((sub, i) => (
-                  <Link key={i} to={`/plants/${sub.categoryName.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {sub.categoryName}
-                  </Link>
-                ))}
+              <div className={styles.dropdownMenu}>
+                {plantSubCategories.map((sub, idx) => {
+                  const slug = sub.name.toLowerCase().replace(/\s+/g, "-");
+                  return (
+                    <Link
+                      key={idx}
+                      to={`/plants/${slug}`}
+                      onClick={() => setOpenDropdown(null)}
+                    >
+                      {sub.name}
+                    </Link>
+                  );
+                })}
               </div>
             )}
-          </nav>
+          </div>
 
-          {/* Pots Dropdown */}
-          <nav className={styles.navItem} onMouseEnter={() => setOpenDropdown("pots-planters")} onMouseLeave={() => setOpenDropdown(null)}>
-            <Link to="/pots-planters">Pots & Planters</Link>
-            {openDropdown === "pots-planters" && (
-              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
-                {potSubCategories.map((sub, i) => (
-                  <Link key={i} to={`/pots-planters/${sub.potCategoryName.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {sub.potCategoryName}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </nav>
+          <div className={styles.navItem}>
+            <Link to="/terrarium">Terrarium</Link>
+          </div>
 
-          <nav className={styles.navItem}><Link to="/terrarium">Terrarium</Link></nav>
-          <nav className={styles.navItem}><Link to="/offers">Offers</Link></nav>
-          <nav className={styles.navItem}><Link to="/workshops">Workshops</Link></nav>
+          <div className={styles.navItem}>
+            <Link to="/offers">Offers</Link>
+          </div>
 
+          <div className={styles.navItem}>
+            <Link to="/workshops">Workshops</Link>
+          </div>
+
+          {/* Search */}
           <div className={styles.searchContainer}>
             <input
               type="text"
@@ -141,11 +176,16 @@ const Navbar = ({ onSearch }) => {
             />
           </div>
 
-          {/* Account */}
-          <nav className={styles.navIcon} onMouseEnter={() => setOpenDropdown("login")} onMouseLeave={() => setOpenDropdown(null)}>
-            <VscAccount />
-            {openDropdown === "login" && (
-              <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
+          {/* Account (Desktop) */}
+          <div
+            className={styles.navIcon}
+            onMouseEnter={() => setOpenDropdown("account")}
+            onMouseLeave={() => setOpenDropdown(null)}
+          >
+            <VscAccount size={25} />
+
+            {openDropdown === "account" && (
+              <div className={styles.dropdownMenu}>
                 {isLoggedIn ? (
                   <>
                     <Link to="/account">My Profile</Link>
@@ -158,28 +198,135 @@ const Navbar = ({ onSearch }) => {
                 )}
               </div>
             )}
-          </nav>
-
-          {/* Cart */}
-          <div className={styles.navIcon}>
-            <Link to="/cart" className={styles.cartLink}>
-              <BsCart />
-              {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
-            </Link>
           </div>
-        </nav>
+        </div>
 
+        {/* Cart Icon */}
+        <div className={styles.navIcon}>
+          <Link to="/cart" className={styles.cartLink}>
+            <BsCart size={25} />
+            {cartCount > 0 && (
+              <span className={styles.cartBadge}>{cartCount}</span>
+            )}
+          </Link>
+        </div>
+
+        {/* Mobile Hamburger */}
         <button className={styles.hamburger} onClick={toggleMobileMenu}>
           <span className={styles.bar}></span>
           <span className={styles.bar}></span>
           <span className={styles.bar}></span>
         </button>
       </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+      <div
+        className={`${styles.mobileOverlay} ${
+          isMobileMenuOpen ? styles.open : ""
+        }`}
+      >
+        <div className={styles.overlayHeader}>
+          <img src={logo} className={styles.overlayLogo} />
+          <button className={styles.closeOverlay} onClick={toggleMobileMenu}>
+            ×
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className={styles.overlaySearch}>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className={styles.overlayLinks}>
+          <Link to="/" onClick={toggleMobileMenu}>
+            Home
+          </Link>
+
+          {/* Plants Mobile */}
+          <div className={styles.overlayDropdown}>
+            <p onClick={() => toggleMobileDropdown("plants")}>
+              Plants ▾
+            </p>
+
+            {mobileDropdowns.plants && (
+              <div className={styles.overlaySubmenu}>
+                {plantSubCategories.map((sub, idx) => {
+                  const slug = sub.name.toLowerCase().replace(/\s+/g, "-");
+                  return (
+                    <Link
+                      key={idx}
+                      to={`/plants/${slug}`}
+                      onClick={toggleMobileMenu}
+                    >
+                      {sub.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <Link to="/terrarium" onClick={toggleMobileMenu}>
+            Terrarium
+          </Link>
+
+          <Link to="/offers" onClick={toggleMobileMenu}>
+            Offers
+          </Link>
+
+          <Link to="/workshops" onClick={toggleMobileMenu}>
+            Workshops
+          </Link>
+
+          {/* Account Mobile */}
+          <div className={styles.overlayDropdown}>
+            <p onClick={() => toggleMobileDropdown("account")}>
+              Account ▾
+            </p>
+
+            {mobileDropdowns.account && (
+              <div className={styles.overlaySubmenu}>
+                {isLoggedIn ? (
+                  <>
+                    <Link to="/account" onClick={toggleMobileMenu}>
+                      My Profile
+                    </Link>
+                    <Link to="/my-orders" onClick={toggleMobileMenu}>
+                      My Orders
+                    </Link>
+                    <Link to="/wishlist" onClick={toggleMobileMenu}>
+                      Wishlist
+                    </Link>
+                    <span onClick={handleLogout}>Logout</span>
+                  </>
+                ) : (
+                  <Link to="/login" onClick={toggleMobileMenu}>
+                    Login
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
+
+          <Link to="/cart" onClick={toggleMobileMenu}>
+            Cart ({cartCount})
+          </Link>
+        </div>
+      </div>
+      )}
     </>
   );
 };
 
 export default Navbar;
+
+
 
 
 

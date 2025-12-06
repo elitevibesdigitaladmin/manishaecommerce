@@ -41,6 +41,90 @@
 .headPara{
   font-size: 18px;
 }
+/* Main Section */
+.categorySection {
+  padding: 50px 20px;
+  background: #f8f8f8;
+}
+
+.heading {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Grid Layout */
+.categoryGrid {
+  display: grid;
+  gap: 20px;
+  padding: 10px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .categoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 900px) {
+  .categoryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Laptop */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .categoryGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Large Screens */
+@media (min-width: 1201px) {
+  .categoryGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Card design */
+.categoryCard {
+  text-decoration: none;
+  display: block;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  /* padding: 25px 10px; */
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Hover Effects */
+.categoryCard:hover {
+  border-color: #70c174;
+  transform: translateY(-5px);
+  box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+}
+
+/* Icon */
+.categoryIcon {
+  font-size: 40px;
+  color: #4CAF50;
+  /* margin-bottom: 12px; */
+}
+
+/* Name text */
+.categoryName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #036715;
+  padding: 10px;
+  margin-top: 5px;
+}
 
 /* Product List Grid */
 .productGrid {
@@ -162,7 +246,7 @@ color: #2d6a4f ;
 
 /* Plant Parent Rewards Club Section */
 .rewardsClub {
-  width: 100%;
+  /* width: 100%; */
   /* max-width: 1200px; */
   
   margin: 40px auto;
@@ -366,10 +450,10 @@ color: #2d6a4f ;
 
 /* About Section */
 .about {
-  width: 100%;
-  max-width: 1200px;
+  /* width: 100%; */
+  /* max-width: 1200px; */
   margin-top: 1rem;
-  padding: 1rem 4rem;
+  /* padding: 1rem 4rem; */
   text-align: center;
   align-items: center;
   margin: 40px auto;
@@ -392,7 +476,7 @@ color: #2d6a4f ;
 /* Responsive Design */
 @media (max-width: 1200px) {
   .homeContainer {
-    padding: 1.5rem;
+    /* padding: 1.5rem; */
   }
 
   .carouselWrapper,
@@ -404,7 +488,7 @@ color: #2d6a4f ;
   .bestPicksContainer,
   .about {
     max-width: 100%;
-    padding: 0 1rem;
+    /* padding: 0 1rem; */
   }
 
   .bestSellersGrid,
@@ -487,7 +571,8 @@ color: #2d6a4f ;
 
 @media (max-width: 768px) {
   .homeContainer {
-    padding: 1rem;
+    /* padding: 1rem; */
+    padding-top: 60px;
   }
 
   .productGrid {
@@ -594,7 +679,7 @@ color: #2d6a4f ;
   }
 
   .about {
-    padding: 1rem 2rem;
+    /* padding: 1rem 2rem; */
   }
 
   .about p {
@@ -612,7 +697,8 @@ color: #2d6a4f ;
 
 @media (max-width: 480px) {
   .homeContainer {
-    padding: 0.5rem;
+    /* padding: 0.5rem; */
+    padding-top: 50px;
   }
 
   .productGrid {

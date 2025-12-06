@@ -1116,10 +1116,16 @@ const ProductDetails = () => {
           <p className={styles.description}><strong>Description:</strong> {product.description}</p>
 
           <div className={styles.priceSection}>
+            <strong>Price:</strong> 
             <p className={styles.price}>
-              <strong>Price:</strong> ₹
-              {product.variants?.length > 0 ? selectedVariant.price : product.terrariumPrice}
+              
+             ₹ {product.variants?.length > 0 ? selectedVariant.price : product.terrariumPrice}
             </p>
+             <p className={styles.dprice}>
+              ₹
+              {product.variants?.length > 0 ? selectedVariant.discountedPrice : product.terrariumDiscountedPrice}
+            </p>
+            
             <p className={styles.stock}><BsCartCheck /> <strong>In Stock</strong></p>
           </div>
 

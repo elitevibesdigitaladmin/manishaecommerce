@@ -1,76 +1,157 @@
 .ordersContainer {
-  padding: 24px;
-  background-color: #f9fafb;
+  padding: 30px;
+  background: #f5f7fa;
   min-height: 100vh;
-  box-sizing: border-box;
 }
 
 .title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: #1f2937;
-  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
 }
 
 .tableWrapper {
-  width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 }
 
 .ordersTable {
-  min-width: 900px;
   width: 100%;
   border-collapse: collapse;
 }
 
-.ordersTable thead {
-  background-color: #f3f4f6;
-}
-
-.ordersTable th,
-.ordersTable td {
-  padding: 12px 16px;
-  text-align: left;
-  font-size: 15px;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: top;
-  color: #374151;
-}
-
 .ordersTable th {
+  background: #eef1f6;
+  padding: 14px;
   font-weight: 600;
-  color: #111827;
+  text-align: left;
+  border-bottom: 2px solid #e0e4ea;
 }
 
-.ordersTable tr:hover {
-  background-color: #f9fafb;
+.ordersTable td {
+  padding: 14px;
+  border-bottom: 1px solid #e8ecf1;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+.customerBox span {
+  display: block;
+  font-size: 13px;
+  color: #555;
 }
 
 .itemDetails {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  padding: 6px;
+  background: #f7f8fc;
+  border-radius: 6px;
 }
 
-.total {
+.priceSmall {
+  font-size: 12px;
+  color: #888;
+}
+
+.totalAmount {
+  font-weight: 700;
+  color: #222;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 600;
+  display: inline-block;
+}
+
+.paid {
+  background: #d1f7d8;
+  color: #067a10;
+}
+
+.cod {
+  background: #fff1bd;
+  color: #9a6b00;
 }
 
 .cancelled {
-  color: #dc2626;
-  font-weight: 600;
+  background: #ffd6d6;
+  color: #b30000;
 }
 
-.completed {
-  color: #16a34a;
-  font-weight: 600;
+.delivered {
+  background: #d6ffe1;
+  color: #007f2c;
 }
 
-@media screen and (max-width: 768px) {
-  .ordersTable {
-    font-size: 14px;
-  }
+.shipped {
+  background: #dceaff;
+  color: #004a9a;
+}
+
+.pending {
+  background: #fff4cc;
+  color: #9a7a00;
+}
+
+.cancelBtn {
+  background: #ff4b4b;
+  color: white;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #d73838;
+}
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.popupActions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirmBtn {
+  background: #e60000;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.closeBtn {
+  background: #999;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }

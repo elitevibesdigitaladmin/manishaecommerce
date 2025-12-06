@@ -3,7 +3,8 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: #f9fafb; /* Light gray background */
+  padding-bottom: 120px; /* Prevents checkout button from being cut */
+  background-color: #f9fafb;
 }
 
 .title {
@@ -43,10 +44,6 @@
   font-size: 0.9rem;
 }
 
-/* .cartItem {
-  border-bottom: 1px solid #e5e7eb;
-} */
-
 .cartItem:last-child {
   border-bottom: none;
 }
@@ -71,7 +68,7 @@
 
 .productName {
   font-weight: 500;
-  color: #2d6a4f; /* Green theme */
+  color: #2d6a4f;
   font-size: 1rem;
 }
 
@@ -83,12 +80,11 @@
 .quantityControls {
   display: flex;
   align-items: center;
-  /* gap: 0.5rem; */
 }
 
 .quantityControls button {
-  background: #e6f0ea; /* Light green */
-  color: #2d6a4f; /* Green theme */
+  background: #e6f0ea;
+  color: #2d6a4f;
   border: none;
   width: 30px;
   height: 30px;
@@ -102,30 +98,28 @@
 }
 
 .quantityControls button:hover {
-  background: #d1e0d5; /* Slightly darker green on hover */
+  background: #d1e0d5;
 }
 
 .quantityControls span {
   font-size: 1rem;
   font-weight: 500;
-  color: #2d6a4f; /* Green theme */
+  color: #2d6a4f;
   width: 30px;
   text-align: center;
 }
 
 .removeButton {
   background: none;
-  align-items: center;
   border: none;
   cursor: pointer;
-  color: #ef4444; /* Red for remove */
+  color: #ef4444;
   font-size: 1rem;
   transition: color 0.2s ease-in-out;
 }
 
 .removeButton:hover {
-  color: #dc2626; /* Darker red on hover */
-  background-color: none;
+  color: #dc2626;
 }
 
 .removeIcon {
@@ -149,7 +143,7 @@
 .couponSection h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #2d6a4f; /* Green theme */
+  color: #2d6a4f;
   margin-bottom: 0.5rem;
 }
 
@@ -175,12 +169,12 @@
 
 .couponInput:focus {
   outline: none;
-  border-color: #48bb78; /* Green theme */
+  border-color: #48bb78;
   box-shadow: 0 0 0 2px rgba(72, 187, 120, 0.2);
 }
 
 .applyButton {
-  background: #2d6a4f; /* Green theme */
+  background: #2d6a4f;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -191,7 +185,7 @@
 }
 
 .applyButton:hover {
-  background: #48bb78; /* Lighter green on hover */
+  background: #48bb78;
 }
 
 .summarySection {
@@ -204,7 +198,7 @@
 .summarySection h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #2d6a4f; /* Green theme */
+  color: #2d6a4f;
   margin-bottom: 1rem;
 }
 
@@ -212,7 +206,6 @@
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
-  /* border-bottom: 1px solid #e5e7eb; */
   font-size: 0.9rem;
   color: #1f2937;
 }
@@ -221,19 +214,15 @@
   border-bottom: none;
 }
 
-.subtotalLabel {
-  font-weight: 600;
-  color: #2d6a4f; /* Green theme */
-}
-
+.subtotalLabel,
 .subtotal {
   font-weight: 600;
-  color: #2d6a4f; /* Green theme */
+  color: #2d6a4f;
 }
 
 .checkoutButton {
-  display: inline-block;
-  background: #2d6a4f; /* Green theme */
+  display: block;
+  background: #2d6a4f;
   color: white;
   padding: 0.75rem 0;
   text-align: center;
@@ -243,11 +232,12 @@
   font-weight: 500;
   width: 100%;
   margin-top: 1rem;
-  transition: background-color 0.2s ease-in-out;
+  margin-bottom: 1rem;  /* keeps button visible */
+  position: relative;
 }
 
 .checkoutButton:hover {
-  background: #48bb78; /* Lighter green on hover */
+  background: #48bb78;
 }
 
 .emptyCart {
@@ -261,6 +251,10 @@
 @media (max-width: 768px) {
   .cartWrapper {
     grid-template-columns: 1fr;
+  }
+
+  .cartContainer {
+    padding-top: 100px; /* Extra space for checkout button */
   }
 
   .cartTable th,
@@ -303,6 +297,7 @@
   .cartTable {
     display: block;
     overflow-x: auto;
+    overflow-y: visible;
     white-space: nowrap;
   }
 

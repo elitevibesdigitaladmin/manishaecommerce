@@ -72,27 +72,84 @@
 
 
 // ==========================
-import { createContext, useContext, useState, useEffect } from "react";
+
+// import { createContext, useContext, useState, useEffect } from "react";
+
+// export const AuthContext = createContext();
+
+// export const AuthProvider = ({ children }) => {
+//   const [user, setUser] = useState(null); // { token, role }
+
+//   // Get token and role from localStorage
+//   const getAuth = () => {
+//     const token = localStorage.getItem("jwtToken");
+//     const role = localStorage.getItem("userRole");
+//     return token ? { token, role } : null;
+//   };
+
+//   // Load user on mount
+//   useEffect(() => {
+//     const auth = getAuth();
+//     if (auth) setUser(auth);
+//   }, []);
+
+//   // LOGIN: store token & role
+//   const login = (token, role) => {
+//     localStorage.setItem("jwtToken", token);
+//     localStorage.setItem("userRole", role);
+//     setUser({ token, role });
+//   };
+
+//   // LOGOUT
+//   const logout = () => {
+//     localStorage.removeItem("jwtToken");
+//     localStorage.removeItem("userRole");
+//     setUser(null);
+//   };
+
+//   return (
+//     <AuthContext.Provider value={{ user, login, logout }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// export const useAuth = () => useContext(AuthContext);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { createContext, useContext, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { token, role }
-
-  // Get token and role from localStorage
-  const getAuth = () => {
+  // Initialize user state from localStorage
+  const [user, setUser] = useState(() => {
     const token = localStorage.getItem("jwtToken");
     const role = localStorage.getItem("userRole");
     return token ? { token, role } : null;
-  };
+  });
 
-  // Load user on mount
-  useEffect(() => {
-    const auth = getAuth();
-    if (auth) setUser(auth);
-  }, []);
-
-  // LOGIN: store token & role
+  // LOGIN
   const login = (token, role) => {
     localStorage.setItem("jwtToken", token);
     localStorage.setItem("userRole", role);

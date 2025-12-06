@@ -122,10 +122,10 @@
 // export default Card;
 
 
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../../config/apiconfig";
+import "./Card.css"
 
 function Card() {
   const [products, setProducts] = useState([]);
@@ -134,166 +134,93 @@ function Card() {
   useEffect(() => {
     fetch(`${config.BASE_URL}/api/product/all`)
       .then((res) => res.json())
-      .then((data) => setProducts(data.slice(0, 3)))   // <<< SHOW ONLY 3
-      .catch((err) => console.log(err));
+      .then((data) => setProducts(data.slice(0, 8))) // Show up to 8, grid will adapt
+      .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
   return (
-    <div style={styles.container}>
+    <section className="featured-section">
+      <div className="container">
+        {/* Header */}
+        <div className="header">
+          <h2 className="title">Featured Products</h2>
+          {/* Uncomment when you have /products page */}
+          {/* <button className="view-all-btn" onClick={() => navigate("/products")}>
+            View All →
+          </button> */}
+        </div>
 
-      {/* Header */}
-      <div style={styles.header}>
-        <h2 style={styles.title}>Featured Products</h2>
-        <button style={styles.viewAllBtn} onClick={() => navigate("/products")}>
-          View All →
-        </button>
+        {/* Product Grid */}
+        <div className="product-grid">
+          {products.length === 0 ? (
+            // Loading Skeleton
+            [...Array(6)].map((_, i) => <ProductSkeleton key={i} />)
+          ) : (
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} navigate={navigate} />
+            ))
+          )}
+        </div>
       </div>
+    </section>
+  );
+}
 
-      {/* Product Grid */}
-      <div style={styles.grid}>
-        {products.map((product) => {
-          const variant = product.variants[0]; // first variant
-          const image = variant?.images?.[0];
+/* ==================== Product Card Component ==================== */
+function ProductCard({ product, navigate }) {
+  const variant = product.variants?.[0];
+  const image = variant?.images?.[0];
 
-          return (
-            <div key={product.id} style={styles.card}>
+  return (
+    <div className="product-card" onClick={() => navigate(`/product/${product.id}`)}>
+      {/* Sale Badge */}
+      {variant?.discountedPrice < variant?.price && (
+        <span className="badge">SALE</span>
+      )}
 
-              {/* Sale Badge */}
-              <span style={styles.badge}>SALE</span>
+      {/* Image */}
+      {image ? (
+        <img
+          src={`data:image/jpeg;base64,${image}`}
+          alt={product.name}
+          className="product-image"
+          loading="lazy"
+        />
+      ) : (
+        <div className="no-image">No Image Available</div>
+      )}
 
-              {/* Product Image */}
-              {image ? (
-                <img
-                  src={`data:image/jpeg;base64,${image}`}
-                  alt={product.name}
-                  style={styles.image}
-                />
-              ) : (
-                <div style={styles.noImage}>No Image</div>
-              )}
+      {/* Content */}
+      <div className="product-info">
+        <h3 className="product-name">{product.name}</h3>
 
-              <h3 style={styles.productName}>{product.name}</h3>
+        <div className="price-container">
+          <span className="discounted-price">₹{variant?.discountedPrice || variant?.price}</span>
+          {variant?.discountedPrice < variant?.price && (
+            <span className="original-price">₹{variant?.price}</span>
+          )}
+        </div>
 
-              {/* Price */}
-              <div style={styles.priceBox}>
-                <span style={styles.discountedPrice}>
-                  ₹{variant.discountedPrice}
-                </span>
-
-                <span style={styles.originalPrice}>
-                  ₹{variant.price}
-                </span>
-              </div>
-
-              {/* Buttons */}
-              <button
-                style={styles.detailsBtn}
-                onClick={() => navigate(`/product/${product.id}`)}
-              >
-                View Details
-              </button>
-            </div>
-          );
-        })}
+        <button className="details-btn" onClick={(e) => { e.stopPropagation(); navigate(`/product/${product.id}`); }}>
+          View Details
+        </button>
       </div>
     </div>
   );
 }
 
-/* -------------------- STYLES -------------------- */
-
-const styles = {
-  container: {
-    padding: "40px 60px",
-    background: "#f8f9fa",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "25px",
-  },
-  title: {
-    fontSize: "28px",
-    fontWeight: "700",
-  },
-  viewAllBtn: {
-    padding: "10px 18px",
-    background: "#0d6efd",
-    color: "#fff",
-    borderRadius: "8px",
-    border: "none",
-    cursor: "pointer",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",   // <<< Show in 3 columns
-    gap: "25px",
-  },
-  card: {
-    background: "#fff",
-    padding: "15px",
-    borderRadius: "10px",
-    boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
-    position: "relative",
-  },
-  badge: {
-    position: "absolute",
-    top: "12px",
-    left: "12px",
-    background: "#ff3f3f",
-    color: "#fff",
-    padding: "5px 10px",
-    borderRadius: "5px",
-    fontSize: "12px",
-  },
-  image: {
-    width: "100%",
-    height: "220px",
-    objectFit: "cover",
-    borderRadius: "10px",
-    marginBottom: "10px",
-  },
-  noImage: {
-    width: "100%",
-    height: "220px",
-    background: "#eee",
-    borderRadius: "10px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: "#777",
-    marginBottom: "10px",
-  },
-  productName: {
-    fontSize: "18px",
-    fontWeight: 600,
-    marginBottom: "10px",
-  },
-  priceBox: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    marginBottom: "15px",
-  },
-  discountedPrice: {
-    fontSize: "18px",
-    fontWeight: 700,
-    color: "#198754",
-  },
-  originalPrice: {
-    fontSize: "15px",
-    textDecoration: "line-through",
-    color: "#777",
-  },
-  detailsBtn: {
-    width: "100%",
-    padding: "10px",
-    background: "#ffc107",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: 600,
-  },
-};
+/* ==================== Skeleton Loader ==================== */
+function ProductSkeleton() {
+  return (
+    <div className="product-card skeleton">
+      <div className="skeleton-image"></div>
+      <div className="product-info">
+        <div className="skeleton-line short"></div>
+        <div className="skeleton-line"></div>
+        <div className="skeleton-line button"></div>
+      </div>
+    </div>
+  );
+}
 
 export default Card;

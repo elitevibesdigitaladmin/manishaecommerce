@@ -66,7 +66,7 @@
 /* Navbar Container */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 0 2rem;
   background-color: #f1f8f4;
@@ -355,4 +355,108 @@
 .cartLink:hover .cartBadge {
   transform: scale(1.2);
 }
+
+
+
+
+
+
+
+
+
+
+/* --------------------------------------------------
+   MOBILE OVERLAY MENU (NEW) — Desktop untouched
+-------------------------------------------------- */
+.mobileOverlay {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.15);
+  z-index: 2000;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.mobileOverlay.open {
+  right: 0;
+}
+
+/* Header inside overlay */
+.overlayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 18px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.overlayLogo {
+  width: 110px;
+  height: auto;
+}
+
+.closeOverlay {
+  font-size: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Search */
+.overlaySearch {
+  padding: 12px 18px;
+}
+
+.overlaySearch input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Links */
+.overlayLinks {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 20px;
+  gap: 18px;
+}
+
+.overlayLinks a,
+.overlayDropdown p {
+  font-size: 17px;
+  color: #2d6a4f;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.overlaySubmenu {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.overlaySubmenu a,
+.overlaySubmenu span {
+  font-size: 15px;
+  color: #157147;
+}
+
+/* Show only on mobile */
+@media (min-width: 769px) {
+  .mobileOverlay {
+    display: none;
+  }
+}
+
+
 

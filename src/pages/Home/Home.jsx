@@ -775,7 +775,11 @@ import indoorPlants from "../../assets/images/img/indoorPlants.jpg";
 import parentPlant from "../../assets/images/img/parentPlant.jpg";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+ const slugify = (text) =>
+  text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
 const Home = () => {
   // Improved Token Handling
   // const rawTokenData = localStorage.getItem("jwtToken");
@@ -794,6 +798,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [plants, setPlants] = useState([]); // Renamed from 'plant' to 'plants' for clarity
   const [banners, setBanners] = useState([]);
+  const [subcategories,setSubcategories]=useState([]);
 
   // AOS Init
   useEffect(() => {
@@ -969,6 +974,22 @@ const getImageSrc = (img) => {
     },
   ];
 
+
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      try {
+        const plantRes = await axios.get(`${config.BASE_URL}/api/categories/all`);
+        setSubcategories(plantRes.data);
+         console.log(plantRes.data);
+        //  console.log("Fetched plant subcategories:", subCategories);
+        // const potRes = await axios.get(`${config.BASE_URL}/api/pot-categories`);
+        // setPotSubCategories(potRes.data);
+      } catch (error) {
+        console.error("Failed to fetch subcategories:", error);
+      }
+    };
+    fetchSubCategories();
+  }, []);
   return (
     <>
       <section className={styles.homeContainer}>
@@ -1004,12 +1025,45 @@ const getImageSrc = (img) => {
                     alt={gift.title}
                     className={styles.giftImage}
                   />
-                  <p className={styles.giftTitle}>{gift.title}</p>
+                  {/* <p className={styles.giftTitle}>{gift.title}</p> */}
                 </div>
               ))}
             </div>
           </div>
         </div>
+ {/* category  */}
+{/* ================= CATEGORY SECTION ================= */}
+<section className={styles.categorySection}>
+  <h2 className={styles.heading} data-aos="zoom-in-up">
+    Browse Categories
+  </h2>
+
+  <div className={styles.categoryGrid} data-aos="fade-up">
+    {subcategories.length > 0 ? (
+      subcategories.map((cat) => {
+        const slug = slugify(cat.name);
+
+        return (
+          <Link
+            key={cat.id}
+            to={`/plants/${slug}`}
+            className={styles.categoryCard}
+          >
+            <div className={styles.categoryCardBody}>
+              {/* <div className={styles.categoryIcon}>
+                <FaSeedling />
+              </div> */}
+              <h3 className={styles.categoryName}>{cat.name}</h3>
+            </div>
+          </Link>
+        );
+      })
+    ) : (
+      <p>No categories available.</p>
+    )}
+  </div>
+</section>
+
 
         <div className={styles.miniHeading}>
           <h2 className={styles.heading} data-aos="zoom-in-up">

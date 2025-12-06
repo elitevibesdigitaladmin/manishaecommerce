@@ -243,20 +243,8 @@ const App = () => {
                 <Route index element={<Home />} />
 
                 {/* Auth */}
-            <Route
-  path="/login"
-  element={
-    localStorage.getItem("jwtToken") ? (
-      localStorage.getItem("role") === "Admin" ? (
-        <Navigate to="/admin" replace />
-      ) : (
-        <Navigate to="/" replace />
-      )
-    ) : (
-      <Login />
-    )
-  }
-/>
+           <Route path="/login" element={<Login />} />
+
 
                 <Route path="/register" element={<CreateAccount />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -264,6 +252,7 @@ const App = () => {
                 <Route path="/account" element={<AccountPage />} />
 
                 {/* Products */}
+               
                 <Route path="/plants" element={<Plants />} />
                 <Route path="/plants/:category" element={<Plants />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
@@ -334,15 +323,15 @@ const App = () => {
   }
 >
                 <Route index element={<AdminDashboard />} />
-                <Route path="/admin/plant-category" element={<CategoryPage/>} />
-                <Route path="/admin/pot-category" element={<PotCategory />} />
-                <Route path="/admin/add-product" element={<AddProduct />} />
-                <Route path="/admin/add-product/:productId" element={<AddProduct />} />
-                <Route path="/admin/product-list" element={<ProductList />} />
-                <Route path="/admin/offer-banner" element={<OfferBanner />} />
-                <Route path="/admin/orders" element={<Order />} />
-                <Route path="/admin/add-workshop" element={<AddWorkshop />} />
-                <Route path="/admin/users" element={<Users />} />
+                <Route path="plant-category" element={<CategoryPage/>} />
+                <Route path="pot-category" element={<PotCategory />} />
+                <Route path="add-product" element={<AddProduct />} />
+                <Route path="add-product/:productId" element={<AddProduct />} />
+                <Route path="product-list" element={<ProductList />} />
+                <Route path="offer-banner" element={<OfferBanner />} />
+                <Route path="orders" element={<Order />} />
+                <Route path="add-workshop" element={<AddWorkshop />} />
+                <Route path="users" element={<Users />} />
               </Route>
             </Routes>
 

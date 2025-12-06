@@ -38,6 +38,48 @@
 //   return <Outlet />;
 // }
 
+// import { Navigate, useLocation } from "react-router-dom";
+// import { useAuth } from "../context/AuthContext";
+
+// const ProtectedRoute = ({ children, role }) => {
+//   const { user } = useAuth();
+//   const location = useLocation();
+
+//   if (!user?.token) {
+//     return <Navigate to="/login" state={{ redirectTo: location.pathname }} />;
+//   }
+
+//   if (role && user.role !== role) {
+//     return <Navigate to="/" />;
+//   }
+
+//   return children;
+// };
+
+// export default ProtectedRoute;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -45,10 +87,12 @@ const ProtectedRoute = ({ children, role }) => {
   const { user } = useAuth();
   const location = useLocation();
 
+  // Redirect to login if not authenticated
   if (!user?.token) {
     return <Navigate to="/login" state={{ redirectTo: location.pathname }} />;
   }
 
+  // Redirect if role does not match
   if (role && user.role !== role) {
     return <Navigate to="/" />;
   }

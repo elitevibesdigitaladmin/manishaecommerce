@@ -4,8 +4,8 @@ import config from "../../../config/apiconfig";
 import styles from "./Users.module.css"; // optional CSS module
 
 const Users = () => {
-  const tokenData = JSON.parse(localStorage.getItem("ecommerce_login"));
-  const token = tokenData?.jwtToken;
+  const token = localStorage.getItem("jwtToken");
+  // const token = tokenData?.jwtToken;
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ const Users = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${config.BASE_URL}/api/show-allUser`, {
+        const response = await axios.get(`${config.BASE_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
         setUsers(response.data); // Adjust if response structure is different
